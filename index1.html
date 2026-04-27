@@ -1,0 +1,555 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans, 'Segoe UI', sans-serif); background: #0a0e1a; color: #fff; min-height: 100vh; }
+
+  .header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 50%, #0d1628 100%);
+    border-bottom: 2px solid #f5c518;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, #f5c518, #e8a000);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 900; color: #0a0e1a;
+    box-shadow: 0 0 20px rgba(245,197,24,0.5);
+  }
+  .header-text h1 { font-size: 20px; font-weight: 800; color: #f5c518; letter-spacing: 1px; }
+  .header-text p { font-size: 12px; color: #8899bb; }
+
+  .nav {
+    display: flex; gap: 4px;
+    background: #111827;
+    padding: 8px 20px;
+    border-bottom: 1px solid #1e2a42;
+    overflow-x: auto;
+  }
+  .nav button {
+    background: transparent; border: none; color: #8899bb;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 500; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav button.active { background: #f5c518; color: #0a0e1a; font-weight: 700; }
+  .nav button:hover:not(.active) { background: #1e2a42; color: #fff; }
+
+  .content { padding: 20px; max-width: 900px; margin: 0 auto; }
+
+  .section-title {
+    font-size: 16px; font-weight: 700; color: #f5c518;
+    margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* Points Table */
+  .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid #1e2a42; }
+  table { width: 100%; border-collapse: collapse; background: #111827; min-width: 500px; }
+  th { background: #1e2a42; color: #8899bb; font-size: 11px; font-weight: 600;
+       padding: 10px 12px; text-align: center; letter-spacing: 0.5px; text-transform: uppercase; }
+  th:first-child { text-align: left; padding-left: 16px; }
+  td { padding: 10px 12px; text-align: center; font-size: 13px;
+       border-top: 1px solid #1a2035; }
+  td:first-child { text-align: left; padding-left: 16px; }
+  tr:hover td { background: #1a2035; }
+  .pos-badge {
+    display: inline-flex; width: 24px; height: 24px;
+    border-radius: 50%; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; margin-right: 6px;
+  }
+  .pos-1 { background: #f5c518; color: #000; }
+  .pos-2 { background: #c0c0c0; color: #000; }
+  .pos-3 { background: #cd7f32; color: #fff; }
+  .pos-other { background: #1e2a42; color: #8899bb; }
+  .pts-bold { font-weight: 800; font-size: 15px; color: #f5c518; }
+  .team-name { font-weight: 600; color: #fff; }
+  .form-dot {
+    display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+    font-size: 9px; font-weight: 700; line-height: 14px; text-align: center;
+    margin: 0 1px;
+  }
+  .form-w { background: #22c55e; color: #fff; }
+  .form-d { background: #f59e0b; color: #fff; }
+  .form-l { background: #ef4444; color: #fff; }
+
+  /* Match Entry */
+  .card {
+    background: #111827; border: 1px solid #1e2a42;
+    border-radius: 12px; padding: 16px; margin-bottom: 16px;
+  }
+  .match-form {
+    display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px;
+    align-items: center; margin-bottom: 12px;
+  }
+  .team-select, .score-input {
+    background: #0a0e1a; border: 1px solid #1e2a42; color: #fff;
+    border-radius: 8px; padding: 10px 12px; font-size: 14px; width: 100%;
+  }
+  .score-input { text-align: center; font-size: 22px; font-weight: 800; width: 64px; }
+  .vs-label { color: #f5c518; font-weight: 800; font-size: 16px; text-align: center; }
+  .score-group { display: flex; gap: 8px; align-items: center; justify-content: center; }
+  .dash { color: #8899bb; font-size: 20px; }
+
+  .btn {
+    background: #f5c518; color: #0a0e1a; border: none;
+    padding: 10px 20px; border-radius: 8px; cursor: pointer;
+    font-weight: 700; font-size: 13px; transition: all 0.2s;
+  }
+  .btn:hover { background: #e8a000; transform: translateY(-1px); }
+  .btn-danger { background: #ef4444; color: #fff; padding: 6px 12px; font-size: 12px; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+
+  /* Fixtures */
+  .fixture-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px; border-top: 1px solid #1a2035;
+    font-size: 13px;
+  }
+  .fixture-item:first-child { border-top: none; }
+  .fixture-teams { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .fixture-score {
+    background: #1e2a42; border-radius: 6px;
+    padding: 4px 12px; font-weight: 700; font-size: 14px;
+    min-width: 60px; text-align: center;
+  }
+  .fixture-score.pending { color: #8899bb; }
+  .fixture-score.played { color: #f5c518; }
+  .team-tag {
+    background: #1e2a42; border-radius: 6px; padding: 4px 10px;
+    font-weight: 600; flex: 1; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .winner-tag { background: #14532d; color: #4ade80; }
+  .date-badge {
+    font-size: 11px; color: #8899bb; margin-right: 10px; min-width: 60px;
+  }
+
+  /* Teams */
+  .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .team-card {
+    background: #111827; border: 1px solid #1e2a42; border-radius: 10px;
+    padding: 14px; display: flex; align-items: center; gap: 12px;
+  }
+  .team-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; flex-shrink: 0;
+  }
+
+  .tag { font-size: 11px; background: #1e2a42; border-radius: 4px; padding: 2px 8px; color: #8899bb; }
+  .tag-green { background: #14532d; color: #4ade80; }
+  .tag-yellow { background: #713f12; color: #fbbf24; }
+
+  .add-row {
+    display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;
+  }
+  input[type="text"] {
+    background: #0a0e1a; border: 1px solid #1e2a42; color: #fff;
+    border-radius: 8px; padding: 10px 12px; font-size: 14px; flex: 1; min-width: 140px;
+  }
+  input[type="text"]::placeholder { color: #4a5568; }
+
+  .empty { color: #4a5568; text-align: center; padding: 32px; font-size: 14px; }
+
+  .live-badge {
+    background: #ef4444; color: #fff; font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .tab-hidden { display: none; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #1a2035; }
+  .stat-row:last-child { border-bottom: none; }
+
+  select { background: #0a0e1a; border: 1px solid #1e2a42; color: #fff; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">CPL</div>
+  <div class="header-text">
+    <h1>COLLEGE PREMIER LEAGUE 2026</h1>
+    <p>Season 1 &nbsp;|&nbsp; MS Turf Ground, Adgaon, Nashik &nbsp;|&nbsp; 2nd & 3rd May 2026</p>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="active" onclick="showTab('table')">Points Table</button>
+  <button onclick="showTab('fixtures')">Fixtures & Results</button>
+  <button onclick="showTab('entry')">Enter Result</button>
+  <button onclick="showTab('teams')">Teams</button>
+  <button onclick="showTab('topscorer')">Top Scorers</button>
+</div>
+
+<div class="content">
+  <!-- POINTS TABLE -->
+  <div id="tab-table">
+    <div class="section-title">
+      <span>🏆</span> League Standings
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th style="text-align:left">Team</th>
+            <th>P</th><th>W</th><th>D</th><th>L</th>
+            <th>GF</th><th>GA</th><th>GD</th>
+            <th>Pts</th>
+            <th>Form</th>
+          </tr>
+        </thead>
+        <tbody id="standings-body"></tbody>
+      </table>
+    </div>
+    <p style="font-size:11px; color:#4a5568; margin-top:8px;">W=3pts &nbsp; D=1pt &nbsp; L=0pts</p>
+  </div>
+
+  <!-- FIXTURES -->
+  <div id="tab-fixtures" class="tab-hidden">
+    <div class="section-title"><span>📅</span> All Fixtures & Results</div>
+    <div class="card" id="fixtures-list" style="padding:0;"></div>
+  </div>
+
+  <!-- ENTER RESULT -->
+  <div id="tab-entry" class="tab-hidden">
+    <div class="section-title"><span>⚽</span> Enter Match Result</div>
+    <div class="card">
+      <div class="match-form">
+        <select id="home-team" class="team-select"></select>
+        <div style="text-align:center">
+          <div class="vs-label">VS</div>
+          <div class="score-group" style="margin-top:8px;">
+            <input class="score-input" type="number" id="home-score" min="0" value="0">
+            <span class="dash">-</span>
+            <input class="score-input" type="number" id="away-score" min="0" value="0">
+          </div>
+        </div>
+        <select id="away-team" class="team-select"></select>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap;">
+        <input type="text" id="match-date" placeholder="Date (e.g. May 2)" style="flex:1; min-width:120px;">
+        <input type="text" id="match-time" placeholder="Time (e.g. 4:00 PM)" style="flex:1; min-width:120px;">
+        <input type="text" id="match-round" placeholder="Round / Group" style="flex:1; min-width:100px;">
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:200px;">
+          <div style="font-size:12px; color:#8899bb; margin-bottom:6px;">Goal Scorers (Home)</div>
+          <input type="text" id="home-scorers" placeholder="e.g. Rahul (23'), Amit (67')">
+        </div>
+        <div style="flex:1; min-width:200px;">
+          <div style="font-size:12px; color:#8899bb; margin-bottom:6px;">Goal Scorers (Away)</div>
+          <input type="text" id="away-scorers" placeholder="e.g. Vikram (45')">
+        </div>
+      </div>
+      <button class="btn" onclick="submitResult()">Submit Result</button>
+      <span id="result-msg" style="margin-left:12px; font-size:13px; color:#22c55e;"></span>
+    </div>
+
+    <div class="section-title" style="margin-top:24px;"><span>➕</span> Schedule a Fixture</div>
+    <div class="card">
+      <div class="match-form">
+        <select id="fix-home" class="team-select"></select>
+        <div class="vs-label">VS</div>
+        <select id="fix-away" class="team-select"></select>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <input type="text" id="fix-date" placeholder="Date" style="flex:1; min-width:120px;">
+        <input type="text" id="fix-time" placeholder="Time" style="flex:1; min-width:120px;">
+        <input type="text" id="fix-round" placeholder="Round" style="flex:1; min-width:100px;">
+      </div>
+      <button class="btn btn-sm" onclick="scheduleFixture()">Schedule Match</button>
+    </div>
+  </div>
+
+  <!-- TEAMS -->
+  <div id="tab-teams" class="tab-hidden">
+    <div class="section-title"><span>👥</span> Registered Teams</div>
+    <div class="add-row">
+      <input type="text" id="new-team" placeholder="Team name...">
+      <input type="text" id="new-captain" placeholder="Captain name...">
+      <button class="btn btn-sm" onclick="addTeam()">Add Team</button>
+    </div>
+    <div class="teams-grid" id="teams-grid"></div>
+  </div>
+
+  <!-- TOP SCORERS -->
+  <div id="tab-topscorer" class="tab-hidden">
+    <div class="section-title"><span>⚡</span> Top Goal Scorers</div>
+    <div class="card">
+      <div id="scorers-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const COLORS = ['#f5c518','#4ade80','#60a5fa','#f87171','#a78bfa','#fb923c','#34d399','#e879f9','#fbbf24','#38bdf8','#fb7185','#4ade80','#818cf8','#f472b6'];
+
+let state = {
+  teams: [
+    {id:1, name:'Team Alpha', captain:'Rahul'},
+    {id:2, name:'Team Beta', captain:'Vikram'},
+    {id:3, name:'Team Gamma', captain:'Amit'},
+    {id:4, name:'Team Delta', captain:'Suresh'},
+  ],
+  matches: [],
+  nextTeamId: 5,
+  nextMatchId: 1,
+};
+
+try {
+  const saved = localStorage.getItem('cpl2026');
+  if(saved) state = JSON.parse(saved);
+} catch(e){}
+
+function save() {
+  try { localStorage.setItem('cpl2026', JSON.stringify(state)); } catch(e){}
+}
+
+function showTab(name) {
+  ['table','fixtures','entry','teams','topscorer'].forEach(t => {
+    document.getElementById('tab-'+t).className = t===name ? '' : 'tab-hidden';
+  });
+  document.querySelectorAll('.nav button').forEach((b,i) => {
+    b.className = ['table','fixtures','entry','teams','topscorer'][i]===name ? 'active' : '';
+  });
+  renderAll();
+}
+
+function computeStandings() {
+  const map = {};
+  state.teams.forEach(t => {
+    map[t.id] = {id:t.id, name:t.name, P:0, W:0, D:0, L:0, GF:0, GA:0, Pts:0, form:[]};
+  });
+  state.matches.filter(m=>m.played).forEach(m => {
+    const h = map[m.homeId], a = map[m.awayId];
+    if(!h||!a) return;
+    h.P++; a.P++;
+    h.GF+=m.hScore; h.GA+=m.aScore;
+    a.GF+=m.aScore; a.GA+=m.hScore;
+    if(m.hScore > m.aScore) {
+      h.W++; h.Pts+=3; h.form.push('W');
+      a.L++; a.form.push('L');
+    } else if(m.hScore < m.aScore) {
+      a.W++; a.Pts+=3; a.form.push('W');
+      h.L++; h.form.push('L');
+    } else {
+      h.D++; h.Pts+=1; h.form.push('D');
+      a.D++; a.Pts+=1; a.form.push('D');
+    }
+  });
+  return Object.values(map).sort((a,b) => {
+    if(b.Pts !== a.Pts) return b.Pts-a.Pts;
+    const gdA = a.GF-a.GA, gdB = b.GF-b.GA;
+    if(gdB !== gdA) return gdB-gdA;
+    return b.GF-a.GF;
+  });
+}
+
+function formDots(form) {
+  return form.slice(-5).map(f => `<span class="form-dot form-${f.toLowerCase()}">${f}</span>`).join('');
+}
+
+function renderStandings() {
+  const standings = computeStandings();
+  const tbody = document.getElementById('standings-body');
+  if(!standings.length) { tbody.innerHTML = '<tr><td colspan="11" class="empty">No teams yet</td></tr>'; return; }
+  tbody.innerHTML = standings.map((t,i) => {
+    const pos = i+1;
+    const posClass = pos===1?'pos-1':pos===2?'pos-2':pos===3?'pos-3':'pos-other';
+    const gd = t.GF-t.GA;
+    return `<tr>
+      <td><span class="pos-badge ${posClass}">${pos}</span></td>
+      <td class="team-name">${t.name}</td>
+      <td>${t.P}</td><td>${t.W}</td><td>${t.D}</td><td>${t.L}</td>
+      <td>${t.GF}</td><td>${t.GA}</td>
+      <td style="color:${gd>0?'#22c55e':gd<0?'#ef4444':'#8899bb'}">${gd>0?'+':''}${gd}</td>
+      <td class="pts-bold">${t.Pts}</td>
+      <td>${formDots(t.form)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function teamName(id) {
+  const t = state.teams.find(t=>t.id===id);
+  return t ? t.name : 'Unknown';
+}
+
+function renderFixtures() {
+  const list = document.getElementById('fixtures-list');
+  if(!state.matches.length) { list.innerHTML = '<div class="empty">No matches scheduled yet</div>'; return; }
+  list.innerHTML = state.matches.slice().reverse().map(m => {
+    const hWin = m.played && m.hScore > m.aScore;
+    const aWin = m.played && m.aScore > m.hScore;
+    const scoreHtml = m.played
+      ? `<div class="fixture-score played">${m.hScore} - ${m.aScore}</div>`
+      : `<div class="fixture-score pending">vs</div>`;
+    const deleteBtn = `<button class="btn btn-danger" onclick="deleteMatch(${m.id})" style="margin-left:8px;">✕</button>`;
+    const scorers = m.played && (m.hScorers||m.aScorers) ? `<div style="font-size:11px;color:#8899bb;margin-top:4px;padding:0 16px 8px;">${m.hScorers?'⚽ '+m.hScorers:''} ${m.aScorers?'| ⚽ '+m.aScorers:''}</div>` : '';
+    return `<div>
+      <div class="fixture-item">
+        <span class="date-badge">${m.date||''} ${m.round?'['+m.round+']':''}</span>
+        <div class="fixture-teams">
+          <div class="team-tag ${hWin?'winner-tag':''}">${teamName(m.homeId)}</div>
+          ${scoreHtml}
+          <div class="team-tag ${aWin?'winner-tag':''}">${teamName(m.awayId)}</div>
+        </div>
+        ${deleteBtn}
+      </div>
+      ${scorers}
+    </div>`;
+  }).join('');
+}
+
+function populateSelects() {
+  const ids = ['home-team','away-team','fix-home','fix-away'];
+  ids.forEach(id => {
+    const sel = document.getElementById(id);
+    if(!sel) return;
+    const val = sel.value;
+    sel.innerHTML = state.teams.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+    if(val) sel.value = val;
+  });
+}
+
+function submitResult() {
+  const hId = parseInt(document.getElementById('home-team').value);
+  const aId = parseInt(document.getElementById('away-team').value);
+  const hS = parseInt(document.getElementById('home-score').value)||0;
+  const aS = parseInt(document.getElementById('away-score').value)||0;
+  const date = document.getElementById('match-date').value;
+  const time = document.getElementById('match-time').value;
+  const round = document.getElementById('match-round').value;
+  const hScorers = document.getElementById('home-scorers').value;
+  const aScorers = document.getElementById('away-scorers').value;
+
+  if(hId===aId) { document.getElementById('result-msg').textContent='Pick different teams!'; return; }
+
+  // Update existing pending or create new
+  const existing = state.matches.find(m=>!m.played && m.homeId===hId && m.awayId===aId);
+  if(existing) {
+    existing.hScore=hS; existing.aScore=aS; existing.played=true;
+    existing.date=date||existing.date; existing.hScorers=hScorers; existing.aScorers=aScorers;
+  } else {
+    state.matches.push({id:state.nextMatchId++, homeId:hId, awayId:aId, hScore:hS, aScore:aS, played:true, date:date||'May 2-3', time, round, hScorers, aScorers});
+  }
+
+  // Update scorers
+  updateScorers(hId, hScorers);
+  updateScorers(aId, aScorers);
+
+  save();
+  document.getElementById('result-msg').textContent = '✓ Result saved!';
+  setTimeout(()=>document.getElementById('result-msg').textContent='', 2500);
+  renderAll();
+}
+
+function updateScorers(teamId, scorersStr) {
+  if(!scorersStr) return;
+  const team = state.teams.find(t=>t.id===teamId);
+  if(!team) return;
+  if(!team.scorers) team.scorers = {};
+  const parts = scorersStr.split(',').map(s=>s.trim()).filter(Boolean);
+  parts.forEach(p => {
+    const name = p.replace(/\(.*?\)/g,'').trim();
+    if(!name) return;
+    team.scorers[name] = (team.scorers[name]||0)+1;
+  });
+}
+
+function scheduleFixture() {
+  const hId = parseInt(document.getElementById('fix-home').value);
+  const aId = parseInt(document.getElementById('fix-away').value);
+  const date = document.getElementById('fix-date').value;
+  const time = document.getElementById('fix-time').value;
+  const round = document.getElementById('fix-round').value;
+  if(hId===aId) return;
+  state.matches.push({id:state.nextMatchId++, homeId:hId, awayId:aId, hScore:0, aScore:0, played:false, date:date||'TBD', time, round});
+  save(); renderAll();
+}
+
+function deleteMatch(id) {
+  state.matches = state.matches.filter(m=>m.id!==id);
+  save(); renderAll();
+}
+
+function addTeam() {
+  const name = document.getElementById('new-team').value.trim();
+  const captain = document.getElementById('new-captain').value.trim();
+  if(!name) return;
+  state.teams.push({id:state.nextTeamId++, name, captain});
+  document.getElementById('new-team').value='';
+  document.getElementById('new-captain').value='';
+  save(); renderAll();
+}
+
+function removeTeam(id) {
+  state.teams = state.teams.filter(t=>t.id!==id);
+  save(); renderAll();
+}
+
+function renderTeams() {
+  const grid = document.getElementById('teams-grid');
+  if(!state.teams.length) { grid.innerHTML='<div class="empty">No teams added</div>'; return; }
+  grid.innerHTML = state.teams.map((t,i) => {
+    const color = COLORS[i%COLORS.length];
+    const initials = t.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const stats = computeStandings().find(s=>s.id===t.id)||{P:0,W:0,D:0,L:0,Pts:0};
+    return `<div class="team-card">
+      <div class="team-avatar" style="background:${color}22; color:${color}; border:2px solid ${color}55">${initials}</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${t.name}</div>
+        <div style="font-size:11px; color:#8899bb;">👤 ${t.captain||'—'}</div>
+        <div style="margin-top:4px; display:flex; gap:4px; flex-wrap:wrap;">
+          <span class="tag tag-yellow">${stats.Pts}pts</span>
+          <span class="tag">${stats.P} played</span>
+        </div>
+      </div>
+      <button class="btn btn-danger" onclick="removeTeam(${t.id})" style="flex-shrink:0;">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function renderScorers() {
+  const list = document.getElementById('scorers-list');
+  const all = [];
+  state.teams.forEach(t => {
+    if(!t.scorers) return;
+    Object.entries(t.scorers).forEach(([name,goals]) => {
+      all.push({name, goals, team:t.name});
+    });
+  });
+  all.sort((a,b)=>b.goals-a.goals);
+  if(!all.length) { list.innerHTML='<div class="empty">No goals recorded yet</div>'; return; }
+  list.innerHTML = all.slice(0,20).map((s,i) => `
+    <div class="stat-row">
+      <span style="color:#8899bb; width:24px; font-size:12px;">${i+1}</span>
+      <span style="flex:1; font-weight:600;">${s.name}</span>
+      <span style="font-size:12px; color:#8899bb; margin-right:12px;">${s.team}</span>
+      <span style="font-weight:800; color:#f5c518; font-size:15px;">${s.goals} ⚽</span>
+    </div>
+  `).join('');
+}
+
+function renderAll() {
+  renderStandings();
+  renderFixtures();
+  populateSelects();
+  renderTeams();
+  renderScorers();
+}
+
+renderAll();
+showTab('table');
+</script>
+</body>
+</html>
