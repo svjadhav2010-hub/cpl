@@ -392,7 +392,7 @@ input::placeholder{color:#aac8b8;font-weight:500;}
       </div>
 
       <!-- Score inputs -->
-      <div class="sm-section">⚽ Score</div>
+      <div class="sm-section">⚽ Score <span style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0;text-transform:none;">(auto-updates from scorers below)</span></div>
       <div class="score-row">
         <div class="score-team-col">
           <div class="score-team-name" id="sm-hname">HOME</div>
@@ -1115,8 +1115,33 @@ function syncHidden(tagsId, hidId){
   const tags=document.getElementById(tagsId);
   const hid=document.getElementById(hidId);
   if(!tags||!hid)return;
-  const names=[...tags.querySelectorAll('.stag')].map(t=>t.dataset.name);
+  // For scorer tags, repeat the name once per goal count
+  const isScorer=tagsId.includes('hsc')||tagsId.includes('asc');
+  const names=[];
+  [...tags.querySelectorAll('.stag')].forEach(t=>{
+    const name=t.dataset.name;
+    if(isScorer){
+      const cnt=t.querySelector('.stag-cnt');
+      const goals=cnt?+cnt.textContent:1;
+      for(let i=0;i<goals;i++)names.push(name);
+    } else {
+      names.push(name);
+    }
+  });
   hid.value=names.join(', ');
+}
+function recalcScoreFromTags(){
+  // Count total goals from tags and update score inputs
+  const hTags=document.getElementById('sm-hsc-tags');
+  const aTags=document.getElementById('sm-asc-tags');
+  if(!hTags||!aTags)return;
+  let hGoals=0,aGoals=0;
+  [...hTags.querySelectorAll('.stag')].forEach(t=>{const cnt=t.querySelector('.stag-cnt');hGoals+=cnt?+cnt.textContent:1;});
+  [...aTags.querySelectorAll('.stag')].forEach(t=>{const cnt=t.querySelector('.stag-cnt');aGoals+=cnt?+cnt.textContent:1;});
+  const hgInp=document.getElementById('sm-hg');
+  const agInp=document.getElementById('sm-ag');
+  if(hgInp)hgInp.value=hGoals;
+  if(agInp)agInp.value=aGoals;
 }
 function addScorerTag(side){
   const selId=side==='h'?'sm-hsc-sel':'sm-asc-sel';
@@ -1126,10 +1151,9 @@ function addScorerTag(side){
   if(!sel||!sel.value)return;
   const name=sel.value;
   const tags=document.getElementById(tagsId);
-  // Check if already added
+  // Check if already added — increment count
   const existing=[...tags.querySelectorAll('.stag')].find(t=>t.dataset.name===name);
   if(existing){
-    // increment count
     const cnt=existing.querySelector('.stag-cnt');
     cnt.textContent=+cnt.textContent+1;
   } else {
@@ -1138,11 +1162,20 @@ function addScorerTag(side){
     tags.appendChild(tag);
   }
   syncHidden(tagsId,hidId);
+  recalcScoreFromTags();
   sel.value='';
 }
 function removeScorerTag(btn,tagsId,hidId){
-  btn.parentElement.remove();
+  // Decrement count first; only remove tag when count hits 0
+  const tag=btn.parentElement;
+  const cnt=tag.querySelector('.stag-cnt');
+  if(cnt&&+cnt.textContent>1){
+    cnt.textContent=+cnt.textContent-1;
+  } else {
+    tag.remove();
+  }
   syncHidden(tagsId,hidId);
+  recalcScoreFromTags();
 }
 function addCardTag(prefix){
   const selId='sm-'+prefix+'-sel';
@@ -1228,6 +1261,9 @@ function openScoreModal(id){
   loadTagsFromString(m.aY,'sm-ay-tags','sm-ay','card');
   loadTagsFromString(m.hR,'sm-hr-tags','sm-hr','card');
   loadTagsFromString(m.aR,'sm-ar-tags','sm-ar','card');
+
+  // After loading scorer tags, recalc score fields from them
+  recalcScoreFromTags();
 
   // MOTM & GK selects
   const motmSel=document.getElementById('sm-motm-sel');
