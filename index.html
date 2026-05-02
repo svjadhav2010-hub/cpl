@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CPL 2026 — College Premier League</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 :root{
   --g:#1db954;--dg:#148a3c;--lg:#e8f8ee;--mlg:#c8edda;
@@ -242,6 +243,13 @@ input::placeholder{color:#aac8b8;font-weight:500;}
 .ceremony-info p{font-size:12px;color:#b45309;font-weight:600;margin-top:3px;}
 .day-header{background:linear-gradient(135deg,var(--dg),var(--g));color:#fff;border-radius:10px;padding:9px 16px;margin-bottom:10px;margin-top:18px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
 .day-header:first-child{margin-top:0;}
+
+/* ── REALTIME STATUS ── */
+.rt-dot{width:8px;height:8px;border-radius:50%;background:#ccc;display:inline-block;margin-right:5px;transition:background .4s;}
+.rt-dot.connected{background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.25);animation:rt-pulse 2s infinite;}
+.rt-dot.error{background:var(--red);}
+@keyframes rt-pulse{0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,.25);}50%{box-shadow:0 0 0 6px rgba(74,222,128,.05);}}
+.rt-badge{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:4px;white-space:nowrap;}
 
 /* ── DANGER ZONE ── */
 .danger-zone{border:2px solid #fca5a5;border-radius:14px;padding:18px;background:#fff5f5;}
@@ -510,6 +518,7 @@ input::placeholder{color:#aac8b8;font-weight:500;}
     </div>
     <div class="hdr-right">
       <div class="hdr-ball">⚽</div>
+      <div class="rt-badge" id="rt-status"><span class="rt-dot" id="rt-dot"></span><span id="rt-label">Connecting…</span></div>
       <button class="export-btn" onclick="openExportModal()" title="Export Data">📤 <span class="export-label">Export</span></button>
       <div id="mode-btn" class="viewer-badge" onclick="handleModeBtn()">👁️ Viewer</div>
     </div>
@@ -806,29 +815,117 @@ const DEFAULTS={
 };
 
 // ═══════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════
+const SUPA_URL = 'https://oxojkvffagyupawuzxvz.supabase.co';
+const SUPA_KEY = 'sb_publishable_0cJw8N2t2yw5g-aptvJPXw_UTIP2wmd';
+const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
+const DB_TABLE = 'cpl_state';
+const DB_ROW_ID = 1; // single-row tournament state
+
+// ═══════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════
 let S, adminPin, isAdmin=false;
-function loadState(){
-  try{const d=localStorage.getItem('cpl26v3');S=d?JSON.parse(d):JSON.parse(JSON.stringify(DEFAULTS));}
-  catch(e){S=JSON.parse(JSON.stringify(DEFAULTS));}
-  // ensure fields exist
-  S.teams.forEach(t=>{if(!t.group)t.group='A';});
-  S.matches.forEach(m=>{if(m.live===undefined)m.live=false;if(!m.group)m.group='A';['hSc','aSc','hY','aY','hR','aR','motm','gk'].forEach(k=>{if(m[k]===undefined)m[k]='';});});
-  // migrate: ensure teams have players arrays from DEFAULTS
-  S.teams.forEach(t=>{
+let _saving=false; // debounce flag
+
+function migrateState(raw){
+  if(!raw)raw=JSON.parse(JSON.stringify(DEFAULTS));
+  raw.teams.forEach(t=>{
+    if(!t.group)t.group='A';
     if(!t.players||!t.players.length){
       const def=DEFAULTS.teams.find(d=>d.id===t.id);
       if(def&&def.players)t.players=def.players;else t.players=[];
     }
   });
-  try{adminPin=localStorage.getItem('cpl26pin')||'0205';}catch(e){adminPin='0205';}
+  raw.matches.forEach(m=>{
+    if(m.live===undefined)m.live=false;
+    if(!m.group)m.group='A';
+    ['hSc','aSc','hY','aY','hR','aR','motm','gk'].forEach(k=>{if(m[k]===undefined)m[k]='';});
+  });
+  return raw;
 }
-function save(){
+
+function setRtStatus(state){
+  const dot=document.getElementById('rt-dot');
+  const lbl=document.getElementById('rt-label');
+  if(!dot||!lbl)return;
+  dot.className='rt-dot'+(state==='connected'?' connected':state==='error'?' error':'');
+  lbl.textContent=state==='connected'?'Live':state==='error'?'Offline':'Connecting…';
+}
+
+async function loadState(){
+  // Always load PIN from localStorage (admin-only, device-specific)
+  try{adminPin=localStorage.getItem('cpl26pin')||'0205';}catch(e){adminPin='0205';}
+
+  setRtStatus('connecting');
+  try{
+    const{data,error}=await supa.from(DB_TABLE).select('state').eq('id',DB_ROW_ID).single();
+    if(error&&error.code==='PGRST116'){
+      // Row doesn't exist yet — create it with defaults
+      S=migrateState(null);
+      await supa.from(DB_TABLE).insert({id:DB_ROW_ID,state:S});
+    } else if(error){
+      throw error;
+    } else {
+      S=migrateState(data.state);
+    }
+    setRtStatus('connected');
+  } catch(e){
+    console.warn('Supabase load failed, falling back to localStorage:',e);
+    setRtStatus('error');
+    try{const d=localStorage.getItem('cpl26v3');S=migrateState(d?JSON.parse(d):null);}
+    catch(e2){S=migrateState(null);}
+  }
+}
+
+async function save(){
+  // Always keep localStorage as offline backup
   try{localStorage.setItem('cpl26v3',JSON.stringify(S));}catch(e){}
   try{localStorage.setItem('cpl26pin',adminPin);}catch(e){}
+  // Push to Supabase
+  try{
+    await supa.from(DB_TABLE).upsert({id:DB_ROW_ID,state:S,updated_at:new Date().toISOString()});
+  } catch(e){
+    console.error('Supabase save failed:',e);
+    setRtStatus('error');
+  }
 }
-loadState();
+
+function subscribeRealtime(){
+  supa.channel('cpl_state_changes')
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:DB_TABLE,filter:`id=eq.${DB_ROW_ID}`},
+      (payload)=>{
+        // Only update if we're not the one who just saved
+        if(_saving)return;
+        const fresh=migrateState(payload.new.state);
+        S=fresh;
+        renderAll();
+        console.log('🔄 State synced from remote');
+      }
+    )
+    .subscribe((status)=>{
+      if(status==='SUBSCRIBED')setRtStatus('connected');
+      else if(status==='CLOSED'||status==='CHANNEL_ERROR')setRtStatus('error');
+    });
+}
+
+// Wrap save to set _saving flag so we don't re-render from our own push
+const _origSave=save;
+async function saveAndSync(){
+  _saving=true;
+  await save();
+  setTimeout(()=>{_saving=false;},1500);
+}
+
+// Boot sequence — async init
+async function boot(){
+  await loadState();
+  updateNav();
+  showTab('groups');
+  subscribeRealtime();
+}
+boot();
 
 // ═══════════════════════════════════════
 //  NAV
@@ -901,7 +998,7 @@ function changePin(){
   if(o!==adminPin){msg.className='err';msg.textContent='❌ Wrong current PIN';return;}
   if(!/^\d{4}$/.test(n)){msg.className='err';msg.textContent='❌ Must be 4 digits';return;}
   if(n!==c){msg.className='err';msg.textContent='❌ PINs don\'t match';return;}
-  adminPin=n;save();msg.className='ok';msg.textContent='✅ PIN updated!';
+  adminPin=n;saveAndSync();msg.className='ok';msg.textContent='✅ PIN updated!';
   ['old-pin','new-pin','conf-pin'].forEach(id=>document.getElementById(id).value='');
   setTimeout(()=>msg.textContent='',3000);
 }
@@ -1420,7 +1517,7 @@ function saveScore(goLive){
     if(gk){if(!S.gk)S.gk={};S.gk[gk]=(S.gk[gk]||0)+1;}
     sendMatchEmail(m); // ← fire email to organizer
   }
-  save();closeScoreModal();renderAll();
+  saveAndSync().then(()=>{closeScoreModal();renderAll();});
 }
 
 function confirmUndo(id){
@@ -1433,7 +1530,7 @@ function undoResult(){
   const m=S.matches.find(m=>m.id===activeMatchId);if(!m)return;
   if(m.played&&!m.live)revertStats(m);
   Object.assign(m,{played:false,live:false,hG:0,aG:0,hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:''});
-  save();closeScoreModal();renderAll();
+  saveAndSync().then(()=>{closeScoreModal();renderAll();});
 }
 
 function revertStats(m){
@@ -1557,12 +1654,12 @@ function addTeam(){
   if(S.teams.find(t=>t.name.toLowerCase()===name.toLowerCase())){alert('Team already exists!');return;}
   S.teams.push({id:S.nextTid++,name,group,captain,players:[],scorers:{},yellows:{},reds:{}});
   document.getElementById('new-team').value='';document.getElementById('new-captain').value='';
-  save();renderAll();
+  saveAndSync().then(()=>renderAll());
 }
 function removeTeam(id){
   const t=S.teams.find(t=>t.id===id);
   if(!confirm(`Remove "${t?.name}"?`))return;
-  S.teams=S.teams.filter(t=>t.id!==id);save();renderAll();
+  S.teams=S.teams.filter(t=>t.id!==id);saveAndSync().then(()=>renderAll());
 }
 
 // ═══════════════════════════════════════
@@ -1590,7 +1687,7 @@ function scheduleFixture(){
     group:ht?ht.group:'A',
     hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:''
   });
-  save();renderAll();
+  saveAndSync().then(()=>renderAll());
   msg.className='ok';msg.textContent='✅ Fixture added!';
   setTimeout(()=>msg.textContent='',2500);
 }
@@ -1598,7 +1695,7 @@ function deleteMatch(id){
   if(!confirm('Remove this match?'))return;
   const m=S.matches.find(m=>m.id===id);
   if(m&&m.played)revertStats(m);
-  S.matches=S.matches.filter(m=>m.id!==id);save();renderAll();
+  S.matches=S.matches.filter(m=>m.id!==id);saveAndSync().then(()=>renderAll());
 }
 
 // ═══════════════════════════════════════
@@ -1609,13 +1706,13 @@ function resetResults(){
   S.matches.forEach(m=>{m.played=false;m.live=false;m.hG=0;m.aG=0;m.hSc='';m.aSc='';m.hY='';m.aY='';m.hR='';m.aR='';m.motm='';m.gk='';});
   S.teams.forEach(t=>{t.scorers={};t.yellows={};t.reds={};});
   S.motm={};S.gk={};
-  save();renderAll();alert('✅ Results reset.');
+  saveAndSync().then(()=>{renderAll();alert('✅ Results reset.');});
 }
 function fullReset(){
   if(!confirm('⚠️ FULL RESET — delete ALL data?'))return;
   const v=prompt('Type RESET to confirm:');
   if(v!=='RESET'){alert('Cancelled.');return;}
-  S=JSON.parse(JSON.stringify(DEFAULTS));save();renderAll();alert('✅ Full reset done.');
+  S=JSON.parse(JSON.stringify(DEFAULTS));saveAndSync().then(()=>{renderAll();alert('✅ Full reset done.');});
 }
 
 // ═══════════════════════════════════════
@@ -1837,11 +1934,6 @@ function exportAllJSON(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`CPL2026_Backup_${stamp}.json`;a.click();URL.revokeObjectURL(a.href);
   closeExportModal();
 }
-
-// ── INIT ──
-updateNav();
-showTab('groups');
-//doneeee
 </script>
 </body>
 </html>
