@@ -559,7 +559,7 @@ function loadState(){
     const d=localStorage.getItem('cpl26e');
     S=d?JSON.parse(d):JSON.parse(JSON.stringify(DEFAULTS));
   }catch(e){S=JSON.parse(JSON.stringify(DEFAULTS));}
-  try{adminPin=localStorage.getItem('cpl26pin')||'1234';}catch(e){adminPin='0205';}
+  try{adminPin=localStorage.getItem('cpl26pin')||'0205';}catch(e){adminPin='0205';}
 }
 function save(){
   try{localStorage.setItem('cpl26e',JSON.stringify(S));}catch(e){}
