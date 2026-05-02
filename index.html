@@ -376,11 +376,244 @@ input::placeholder{color:#aac8b8;font-weight:500;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px;}
-@media(max-width:600px){
-  .hdr-info h1{font-size:19px;}
-  .nav button{padding:12px 11px;font-size:12px;}
-  .groups-wrap{grid-template-columns:1fr;}
-  .score-row{grid-template-columns:1fr 46px 1fr;}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — TABLET (≤ 768px)
+══════════════════════════════════════ */
+@media(max-width:768px){
+  /* Header */
+  .hdr-inner{padding:12px 14px;gap:10px;}
+  .hdr-info h1{font-size:17px;letter-spacing:1px;}
+  .hdr-info p{gap:4px;}
+  .hdr-info p em{font-size:10px;padding:2px 7px;}
+  .hdr-ball{display:none;}
+  .export-btn .export-label{display:none;}
+  .export-btn{padding:6px 9px;}
+  .rt-badge{padding:3px 8px;font-size:10px;}
+
+  /* Content */
+  .content{padding:16px 12px 80px;}
+
+  /* Nav */
+  .nav button{padding:12px 12px;font-size:12px;gap:4px;}
+  .ni{font-size:14px;}
+
+  /* Stats strip */
+  .stats-strip{grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:16px;}
+  .scard{padding:11px 8px;}
+  .scard .sv{font-size:30px;}
+  .scard .sl{font-size:9px;}
+
+  /* Groups */
+  .groups-wrap{grid-template-columns:1fr;gap:14px;}
+
+  /* Standings table — hide less important cols */
+  .gt th:nth-child(4),.gt td:nth-child(4),  /* W */
+  .gt th:nth-child(5),.gt td:nth-child(5),  /* D */
+  .gt th:nth-child(6),.gt td:nth-child(6)   /* L */
+  {display:none;}
+
+  /* Fixture card */
+  .fmeta{padding:6px 12px;gap:6px;}
+  .fmain{padding:11px 12px;gap:8px;}
+  .fxname{font-size:12px;}
+  .sdisplay{font-size:18px;min-width:66px;padding:6px 9px;}
+  .tava{width:32px;height:32px;font-size:10px;}
+  .fadmin{padding:6px 12px 10px;gap:5px;}
+  .fa-btn{padding:5px 9px;font-size:11px;}
+  .ffoot{padding:0 12px 10px;gap:4px;}
+  .schip,.cchip,.mchip,.gkchip{font-size:10px;padding:2px 7px;}
+
+  /* Score modal */
+  .score-modal-box{border-radius:16px;max-height:95vh;}
+  .sm-body{padding:14px 16px 18px;}
+  .score-row{grid-template-columns:1fr 40px 1fr;}
+  .score-inp{font-size:28px;}
+  .sm-foot{gap:6px;}
+  .sm-foot button{flex:1;min-width:0;font-size:12px;padding:9px 8px;text-align:center;justify-content:center;}
+
+  /* Scorer dropdowns in modal — stack on mobile */
+  .frow{gap:10px;}
+  .frow>*{min-width:100%;}
+  .scorer-add-row{gap:5px;}
+  .scorer-add-btn{padding:8px 10px;font-size:12px;}
+
+  /* Knockout bracket */
+  #ko-bracket>div:first-child{grid-template-columns:1fr!important;}
+  .ko-team-name{max-width:110px;font-size:13px;}
+  .ko-score{min-width:70px;padding:6px 10px;font-size:22px;}
+  .ko-fixture{padding:12px 14px;gap:8px;}
+  .ko-header h2{font-size:16px;}
+
+  /* Top scorer */
+  .ts-spotlight{padding:14px 16px;gap:12px;}
+  .ts-goals-num{font-size:38px;}
+  .ts-name{font-size:20px;}
+  .ts-avatar{width:46px;height:46px;font-size:14px;}
+
+  /* Cards grid */
+  .tgrid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+
+  /* Ceremony */
+  .ceremony{padding:12px 14px;gap:10px;}
+  .ceremony-info h3{font-size:13px;}
+  .ceremony-info p{font-size:11px;}
+
+  /* Form rows */
+  .frow>*{min-width:120px;}
+  input[type=text],input[type=number],select{font-size:13px;padding:9px 12px;}
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 480px)
+══════════════════════════════════════ */
+@media(max-width:480px){
+  /* Header */
+  .hdr-inner{padding:10px 12px;gap:8px;}
+  .logo{width:40px;height:40px;font-size:12px;}
+  .logo small{font-size:6px;}
+  .hdr-info h1{font-size:14px;letter-spacing:.5px;}
+  .hdr-info p{display:none;} /* hide subtitle pills on tiny screens */
+  .hdr-right{gap:5px;}
+  .admin-badge,.viewer-badge{padding:5px 8px;font-size:10px;}
+  .rt-badge{display:none;} /* hide on smallest — shown in footer instead */
+
+  /* Nav — bigger tap targets */
+  .nav button{padding:11px 10px;font-size:11px;gap:3px;}
+  .ni{font-size:13px;}
+
+  /* Content */
+  .content{padding:12px 10px 90px;}
+
+  /* Stats strip — 2 columns */
+  .stats-strip{grid-template-columns:1fr 1fr;gap:8px;}
+  .scard .sv{font-size:28px;}
+
+  /* Standings — minimal cols on tiny */
+  .gt th:nth-child(7),.gt td:nth-child(7),  /* GF */
+  .gt th:nth-child(8),.gt td:nth-child(8),  /* GA */
+  .gt th:nth-child(9),.gt td:nth-child(9)   /* GD */
+  {display:none;}
+  .gt th,.gt td{padding:8px 5px;font-size:11px;}
+  .tname{font-size:11px;}
+  .pts{font-size:13px;}
+  .fd-dot{width:12px;height:12px;font-size:7px;}
+
+  /* Full standings table — hide extra cols */
+  table.full th:nth-child(4),table.full td:nth-child(4),  /* W */
+  table.full th:nth-child(5),table.full td:nth-child(5),  /* D */
+  table.full th:nth-child(6),table.full td:nth-child(6),  /* L */
+  table.full th:nth-child(8),table.full td:nth-child(8),  /* GA */
+  table.full th:nth-child(9),table.full td:nth-child(9)   /* GD */
+  {display:none;}
+  table.full th,table.full td{padding:9px 6px;font-size:11px;}
+
+  /* Fixture card */
+  .fcard{border-radius:12px;}
+  .fmeta{padding:5px 10px;gap:5px;font-size:10px;}
+  .rpill{padding:2px 8px;font-size:9px;}
+  .gpill{padding:2px 7px;font-size:9px;}
+  .fmain{padding:10px 10px;gap:6px;}
+  .fxname{font-size:11px;}
+  .sdisplay{font-size:16px;min-width:58px;padding:5px 7px;letter-spacing:1px;}
+  .sdisplay.pending{font-size:11px;}
+  .tava{width:28px;height:28px;font-size:9px;}
+  .fadmin{padding:5px 10px 9px;gap:4px;}
+  .fa-btn{padding:5px 8px;font-size:10px;border-radius:7px;}
+  .ffoot{padding:0 10px 9px;}
+  .schip,.cchip,.mchip,.gkchip{font-size:9px;padding:2px 6px;}
+
+  /* Score modal — full screen feel */
+  .score-modal-box{border-radius:14px 14px 0 0;position:fixed;bottom:0;left:0;right:0;max-width:100%;max-height:92vh;border:none;}
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .sm-hdr{padding:14px 16px 12px;}
+  .sm-hdr h2{font-size:17px;}
+  .sm-body{padding:12px 14px 16px;}
+  .sm-match-banner{padding:10px 12px;margin-bottom:14px;}
+  .sm-match-teams{font-size:15px;}
+  .score-row{grid-template-columns:1fr 36px 1fr;gap:6px;margin-bottom:14px;}
+  .score-inp{font-size:24px;padding:6px 2px;}
+  .score-vs{font-size:16px;}
+  .sm-section{font-size:10px;margin-bottom:8px;}
+  .sm-foot{gap:5px;margin-top:14px;padding-top:12px;}
+  .sm-foot button{flex:1;min-width:0;font-size:11px;padding:10px 6px;text-align:center;justify-content:center;}
+  .frow>*{min-width:100%;}
+
+  /* Knockout bracket */
+  .ko-header{padding:12px 14px;}
+  .ko-header h2{font-size:15px;}
+  .ko-team-name{font-size:12px;max-width:90px;}
+  .ko-score{min-width:58px;padding:5px 8px;font-size:19px;}
+  .ko-fixture{padding:10px 12px;gap:6px;}
+  .ko-meta{padding:8px 12px 0;gap:6px;}
+  .ko-badge{font-size:10px;padding:2px 9px;}
+  .ko-winner-banner{padding:8px 12px;font-size:12px;}
+  .ko-qualifier{font-size:10px;padding:5px 12px 8px;}
+
+  /* Top scorer */
+  .ts-spotlight{padding:12px 14px;gap:10px;border-radius:12px;}
+  .ts-crown{font-size:30px;}
+  .ts-avatar{width:40px;height:40px;font-size:12px;}
+  .ts-name{font-size:17px;}
+  .ts-team{font-size:11px;}
+  .ts-goals-num{font-size:32px;}
+  .ts-goals-lbl{font-size:9px;}
+
+  /* Scorers / discipline rows */
+  .scname{font-size:13px;}
+  .scteam{font-size:11px;}
+  .scval{font-size:18px;min-width:44px;}
+  .rnum{font-size:16px;width:28px;}
+
+  /* Card */
+  .card{padding:14px;border-radius:12px;}
+  .stitle{font-size:11px;letter-spacing:2px;margin-bottom:12px;}
+
+  /* Teams grid */
+  .tgrid{grid-template-columns:1fr 1fr;gap:8px;}
+  .teamcard{padding:11px;gap:9px;}
+  .tav{width:36px;height:36px;}
+
+  /* Admin forms */
+  input[type=text],input[type=number],select{font-size:14px;padding:10px 12px;}
+  .btn,.btn-live,.btn-out,.btn-danger{padding:10px 14px;font-size:13px;}
+  .btn-sm{padding:9px 12px;font-size:12px;}
+
+  /* Day header */
+  .day-header{font-size:12px;padding:8px 14px;letter-spacing:1.5px;}
+
+  /* Settings */
+  .admin-only-row{flex-direction:column;align-items:flex-start;gap:8px;}
+  .admin-only-row button{width:100%;justify-content:center;}
+
+  /* Filter bar */
+  .fbar{gap:8px;}
+  .fbar select{max-width:100%;font-size:12px;}
+
+  /* Danger zone */
+  .danger-zone{padding:14px;}
+
+  /* Export modal */
+  .export-modal-box{border-radius:14px;}
+  .export-option{padding:10px 12px;}
+  .export-option-label{font-size:13px;}
+  .export-option-sub{font-size:10px;}
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — VERY SMALL (≤ 360px)
+══════════════════════════════════════ */
+@media(max-width:360px){
+  .hdr-info h1{font-size:12px;}
+  .logo{width:36px;height:36px;font-size:11px;}
+  .nav button{padding:10px 8px;font-size:10px;}
+  .fxname{font-size:10px;}
+  .sdisplay{font-size:14px;min-width:52px;}
+  .tava{width:26px;height:26px;font-size:8px;}
+  .fa-btn{font-size:9px;padding:4px 7px;}
+  .stats-strip{grid-template-columns:1fr 1fr;}
+  .scard .sv{font-size:24px;}
+  .tgrid{grid-template-columns:1fr;}
 }
 </style>
 </head>
