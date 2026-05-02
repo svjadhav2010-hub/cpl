@@ -1280,6 +1280,105 @@ function openScoreModal(id){
 }
 function closeScoreModal(){document.getElementById('score-overlay').classList.add('hidden');activeMatchId=null;}
 
+// ═══════════════════════════════════════
+//  RESEND EMAIL CONFIG
+// ═══════════════════════════════════════
+const RESEND_API_KEY  = 're_8gYqBHyo_2drb7PfnTBJn7EPs1S7Ug6fW';
+const ORGANIZER_EMAIL = 'swayamvjadhav2010@gmail.com';
+
+function sendMatchEmail(m){
+  const hName=tName(m.hId), aName=tName(m.aId);
+  const result=m.hG>m.aG?`🏆 ${hName} won`:m.hG<m.aG?`🏆 ${aName} won`:'🤝 Match drawn';
+
+  // Build scorers rows
+  const scorerRows=[];
+  if(m.hSc)m.hSc.split(',').map(s=>s.trim()).filter(Boolean).forEach(n=>scorerRows.push(`<tr><td>⚽</td><td><b>${n}</b></td><td style="color:#5a7a65;">${hName}</td></tr>`));
+  if(m.aSc)m.aSc.split(',').map(s=>s.trim()).filter(Boolean).forEach(n=>scorerRows.push(`<tr><td>⚽</td><td><b>${n}</b></td><td style="color:#5a7a65;">${aName}</td></tr>`));
+  const scorersHtml=scorerRows.length
+    ?`<table style="width:100%;border-collapse:collapse;margin-top:6px;">${scorerRows.join('')}</table>`
+    :`<p style="color:#5a7a65;margin:6px 0;">No goals recorded.</p>`;
+
+  // Build extras
+  const extras=[];
+  if(m.motm)extras.push(`<li>⭐ <b>Man of the Match:</b> ${m.motm}</li>`);
+  if(m.gk)extras.push(`<li>🧤 <b>Clean Sheet GK:</b> ${m.gk}</li>`);
+  if(m.hY)extras.push(`<li>🟨 <b>Yellows (${hName}):</b> ${m.hY}</li>`);
+  if(m.aY)extras.push(`<li>🟨 <b>Yellows (${aName}):</b> ${m.aY}</li>`);
+  if(m.hR)extras.push(`<li>🟥 <b>Reds (${hName}):</b> ${m.hR}</li>`);
+  if(m.aR)extras.push(`<li>🟥 <b>Reds (${aName}):</b> ${m.aR}</li>`);
+  const extrasHtml=extras.length?`<ul style="margin:6px 0;padding-left:18px;">${extras.join('')}</ul>`:`<p style="color:#5a7a65;margin:6px 0;">—</p>`;
+
+  const html=`
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:0;background:#f4fbf7;font-family:'Segoe UI',Arial,sans-serif;">
+<div style="max-width:520px;margin:30px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(29,185,84,.15);border:2px solid #cce8d8;">
+
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#0f6b2e,#1db954);padding:22px 28px;display:flex;align-items:center;gap:14px;">
+    <div style="width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:#fff;text-align:center;line-height:1.1;flex-shrink:0;">CPL<br><span style="font-size:9px;opacity:.85;">2026</span></div>
+    <div>
+      <div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:1px;">MATCH RESULT</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.8);margin-top:3px;">${m.round} &nbsp;·&nbsp; Group ${m.group} &nbsp;·&nbsp; ${m.date||''} ${m.time||''}</div>
+    </div>
+  </div>
+
+  <!-- Score block -->
+  <div style="padding:28px;text-align:center;border-bottom:2px solid #e8f8ee;">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+      <div style="flex:1;text-align:right;">
+        <div style="font-size:20px;font-weight:900;color:#1a2e22;">${hName}</div>
+      </div>
+      <div style="background:#e8f8ee;border:2px solid #cce8d8;border-radius:12px;padding:10px 22px;font-size:36px;font-weight:900;color:#0f6b2e;letter-spacing:4px;min-width:110px;">${m.hG} – ${m.aG}</div>
+      <div style="flex:1;text-align:left;">
+        <div style="font-size:20px;font-weight:900;color:#1a2e22;">${aName}</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:15px;font-weight:800;color:#1db954;">${result}</div>
+  </div>
+
+  <!-- Scorers -->
+  <div style="padding:18px 28px;border-bottom:2px solid #e8f8ee;">
+    <div style="font-size:11px;font-weight:900;color:#148a3c;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">⚽ Goal Scorers</div>
+    ${scorersHtml}
+  </div>
+
+  <!-- Extras -->
+  <div style="padding:18px 28px;border-bottom:2px solid #e8f8ee;">
+    <div style="font-size:11px;font-weight:900;color:#148a3c;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">🏅 Match Extras</div>
+    ${extrasHtml}
+  </div>
+
+  <!-- Footer -->
+  <div style="padding:14px 28px;background:#f4fbf7;text-align:center;font-size:11px;color:#5a7a65;">
+    📍 MS Turf, Adgaon, Nashik &nbsp;·&nbsp; CPL 2026 Season 1 &nbsp;·&nbsp; Auto-notification
+  </div>
+
+</div>
+</body>
+</html>`;
+
+  fetch('https://api.resend.com/emails',{
+    method:'POST',
+    headers:{
+      'Authorization':`Bearer ${RESEND_API_KEY}`,
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({
+      from:'CPL 2026 <onboarding@resend.dev>',
+      to:[ORGANIZER_EMAIL],
+      subject:`✅ CPL Result: ${hName} ${m.hG}–${m.aG} ${aName} (${m.round})`,
+      html
+    })
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.id)console.log('✅ Email sent:',d.id);
+    else console.error('Resend error:',d);
+  })
+  .catch(err=>console.error('Email failed:',err));
+}
+
 function saveScore(goLive){
   const m=S.matches.find(m=>m.id===activeMatchId);if(!m)return;
   // Sync all tag-based hidden fields first
@@ -1312,13 +1411,14 @@ function saveScore(goLive){
     // Live: update score display only, don't affect standings
     m.live=true;m.played=false;
   } else {
-    // Finalize: update standings
+    // Finalize: update standings + send email
     m.live=false;m.played=true;
     updScorers(m.hId,hSc);updScorers(m.aId,aSc);
     updCards(m.hId,hY,'yellows');updCards(m.aId,aY,'yellows');
     updCards(m.hId,hR,'reds');updCards(m.aId,aR,'reds');
     if(motm){if(!S.motm)S.motm={};S.motm[motm]=(S.motm[motm]||0)+1;}
     if(gk){if(!S.gk)S.gk={};S.gk[gk]=(S.gk[gk]||0)+1;}
+    sendMatchEmail(m); // ← fire email to organizer
   }
   save();closeScoreModal();renderAll();
 }
