@@ -21,49 +21,19 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 /* ── HEADER ── */
 .hdr{background:linear-gradient(135deg,#0f6b2e 0%,#1db954 50%,#17a847 100%);position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(15,107,46,.3);}
 .hdr::before{content:'⚽';position:absolute;right:-20px;top:-20px;font-size:160px;opacity:.07;line-height:1;pointer-events:none;}
-.hdr-inner{max-width:1100px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:12px;}
-.logo{width:54px;height:54px;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:16px;color:#fff;letter-spacing:1px;}
-.logo small{font-size:8px;font-weight:700;opacity:.85;letter-spacing:2px;margin-top:-2px;}
-.hdr-info{flex:1;min-width:0;}
-.hdr-info h1{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:#fff;letter-spacing:1.5px;text-transform:uppercase;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.hdr-info p{font-size:11px;color:rgba(255,255,255,.85);margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;}
-.hdr-info p em{font-style:normal;background:rgba(255,255,255,.18);border-radius:20px;padding:2px 9px;white-space:nowrap;}
-.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.hdr-ball{font-size:32px;opacity:.3;animation:spin 20s linear infinite;}
+.hdr-inner{max-width:1100px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;gap:14px;}
+.logo{width:60px;height:60px;flex-shrink:0;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;color:#fff;letter-spacing:1px;}
+.logo small{font-size:9px;font-weight:700;opacity:.85;letter-spacing:2px;margin-top:-2px;}
+.hdr-info h1{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;color:#fff;letter-spacing:1.5px;text-transform:uppercase;line-height:1.1;}
+.hdr-info p{font-size:11px;color:rgba(255,255,255,.85);margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;}
+.hdr-info p em{font-style:normal;background:rgba(255,255,255,.18);border-radius:20px;padding:2px 9px;}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.hdr-ball{font-size:36px;opacity:.3;animation:spin 20s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .admin-badge{background:rgba(255,255,255,.25);border:1.5px solid rgba(255,255,255,.5);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;}
 .admin-badge:hover{background:rgba(255,255,255,.35);}
 .viewer-badge{background:rgba(0,0,0,.15);border:1.5px solid rgba(255,255,255,.25);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:800;color:rgba(255,255,255,.8);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;}
 .viewer-badge:hover{background:rgba(0,0,0,.25);}
-.export-btn{background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.4);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .2s;white-space:nowrap;}
-.export-btn:hover{background:rgba(255,255,255,.3);}
-/* Export modal */
-.export-modal-box{background:var(--white);border-radius:18px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:pop .25s ease;overflow:hidden;}
-.export-hdr{padding:18px 22px 14px;background:linear-gradient(135deg,var(--lg),#d4f0e0);border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
-.export-hdr h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:var(--dg);letter-spacing:1px;}
-.export-body{padding:18px 22px;}
-.export-option{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:2px solid var(--border);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:all .2s;background:var(--white);}
-.export-option:hover{border-color:var(--g);background:var(--lg);transform:translateY(-1px);}
-.export-option:last-child{margin-bottom:0;}
-.export-option-info{display:flex;align-items:center;gap:10px;}
-.export-option-icon{font-size:22px;width:36px;text-align:center;}
-.export-option-label{font-weight:800;font-size:14px;color:var(--text);}
-.export-option-sub{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;}
-.export-arrow{font-size:18px;color:var(--g);opacity:.6;}
-
-/* ── MOBILE HEADER ── */
-@media(max-width:600px){
-  .hdr-inner{padding:12px 14px;gap:10px;flex-wrap:wrap;}
-  .logo{width:46px;height:46px;font-size:14px;}
-  .logo small{font-size:7px;}
-  .hdr-info h1{font-size:18px;letter-spacing:1px;}
-  .hdr-info p em{font-size:10px;padding:2px 7px;}
-  .hdr-ball{display:none;}
-  .hdr-right{gap:6px;}
-  .export-btn .export-label{display:none;}
-  .export-btn{padding:6px 9px;}
-  .admin-badge,.viewer-badge{padding:5px 10px;font-size:11px;}
-}
 
 /* ── NAV ── */
 .nav-wrap{background:var(--white);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);}
@@ -448,48 +418,7 @@ input::placeholder{color:#aac8b8;font-weight:500;}
     </div>
     <div class="hdr-right">
       <div class="hdr-ball">⚽</div>
-      <button class="export-btn" onclick="openExportModal()" title="Export Data">📤 <span class="export-label">Export</span></button>
       <div id="mode-btn" class="viewer-badge" onclick="handleModeBtn()">👁️ Viewer</div>
-    </div>
-  </div>
-</div>
-
-<!-- EXPORT MODAL -->
-<div class="modal-overlay hidden" id="export-overlay" onclick="if(event.target===this)closeExportModal()">
-  <div class="export-modal-box">
-    <div class="export-hdr">
-      <h2>📤 Export Data</h2>
-      <button class="sm-close" onclick="closeExportModal()">✕</button>
-    </div>
-    <div class="export-body">
-      <div class="export-option" onclick="exportStandings()">
-        <div class="export-option-info">
-          <div class="export-option-icon">🏆</div>
-          <div><div class="export-option-label">Standings Table</div><div class="export-option-sub">Group A, B & overall — printable / save as PDF</div></div>
-        </div>
-        <span class="export-arrow">↗</span>
-      </div>
-      <div class="export-option" onclick="exportFixtures()">
-        <div class="export-option-info">
-          <div class="export-option-icon">📅</div>
-          <div><div class="export-option-label">Fixtures & Results</div><div class="export-option-sub">All matches, scores & details — printable / save as PDF</div></div>
-        </div>
-        <span class="export-arrow">↗</span>
-      </div>
-      <div class="export-option" onclick="exportScorers()">
-        <div class="export-option-info">
-          <div class="export-option-icon">🎯</div>
-          <div><div class="export-option-label">Top Performers & Discipline</div><div class="export-option-sub">Goals, MOTM, clean sheets, cards — printable / save as PDF</div></div>
-        </div>
-        <span class="export-arrow">↗</span>
-      </div>
-      <div class="export-option" onclick="exportAllJSON()">
-        <div class="export-option-info">
-          <div class="export-option-icon">💾</div>
-          <div><div class="export-option-label">Full Backup (JSON)</div><div class="export-option-sub">Complete tournament data snapshot — downloads file</div></div>
-        </div>
-        <span class="export-arrow">↓</span>
-      </div>
     </div>
   </div>
 </div>
@@ -1302,181 +1231,9 @@ function renderAll(){
   if(isAdmin)populateSelects();
 }
 
-// ═══════════════════════════════════════
-//  EXPORT
-// ═══════════════════════════════════════
-function openExportModal(){document.getElementById('export-overlay').classList.remove('hidden');}
-function closeExportModal(){document.getElementById('export-overlay').classList.add('hidden');}
-
-// ── shared print helper ──
-const PRINT_CSS=`
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:Arial,sans-serif;background:#fff;color:#1a2e22;padding:20px;}
-  .print-hdr{background:linear-gradient(135deg,#0f6b2e,#1db954);color:#fff;border-radius:10px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
-  .print-logo{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:15px;letter-spacing:1px;color:#fff;}
-  .print-logo small{font-size:7px;opacity:.85;letter-spacing:2px;}
-  .print-title{font-size:20px;font-weight:900;letter-spacing:1px;}
-  .print-sub{font-size:11px;opacity:.85;margin-top:4px;}
-  .print-btn{background:#1db954;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-left:auto;}
-  .print-btn:hover{background:#148a3c;}
-  section{margin-bottom:28px;}
-  h2{font-size:13px;font-weight:900;color:#148a3c;letter-spacing:2px;text-transform:uppercase;padding:8px 12px;background:#e8f8ee;border-left:4px solid #1db954;border-radius:0 6px 6px 0;margin-bottom:10px;}
-  table{width:100%;border-collapse:collapse;font-size:12px;}
-  th{background:#148a3c;color:#fff;padding:8px 10px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;}
-  th.num,td.num{text-align:center;}
-  td{padding:8px 10px;border-bottom:1px solid #cce8d8;color:#1a2e22;}
-  tr:nth-child(even) td{background:#f4fbf7;}
-  tr:hover td{background:#e8f8ee;}
-  .pos{display:inline-block;width:22px;height:22px;border-radius:50%;text-align:center;line-height:22px;font-size:10px;font-weight:900;}
-  .p1{background:#f5c842;color:#000;}.p2{background:#c0c0c0;color:#000;}.p3{background:#b87333;color:#fff;}.po{background:#e8f8ee;color:#5a7a65;}
-  .grp-a{background:#fef3c7;color:#92400e;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:800;}
-  .grp-b{background:#c8edda;color:#148a3c;border-radius:4px;padding:1px 6px;font-size:10px;font-weight:800;}
-  .status-p{color:#148a3c;font-weight:700;}.status-u{color:#5a7a65;}.status-l{color:#e84040;font-weight:700;}
-  .pts{font-weight:900;font-size:14px;color:#148a3c;}
-  .gd-pos{color:#148a3c;font-weight:700;}.gd-neg{color:#e84040;font-weight:700;}
-  .qualify-row td:first-child{border-left:3px solid #1db954;}
-  .footer{text-align:center;font-size:10px;color:#5a7a65;margin-top:20px;padding-top:10px;border-top:1px solid #cce8d8;}
-  @media print{.print-btn{display:none;}.print-hdr{-webkit-print-color-adjust:exact;print-color-adjust:exact;}th{-webkit-print-color-adjust:exact;print-color-adjust:exact;}h2{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
-`;
-
-function openPrintWindow(title, bodyHtml){
-  const w=window.open('','_blank','width=900,height=700');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>CPL 2026 — ${title}</title><style>${PRINT_CSS}</style></head><body>
-    <div class="print-hdr">
-      <div class="print-logo">CPL<small>2026</small></div>
-      <div><div class="print-title">College Premier League 2026 — ${title}</div><div class="print-sub">📍 MS Turf, Adgaon, Nashik &nbsp;|&nbsp; 📅 2 &amp; 3 May 2026</div></div>
-      <button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
-    </div>
-    ${bodyHtml}
-    <div class="footer">Generated on ${new Date().toLocaleString()} &nbsp;·&nbsp; CPL 2026 — College Premier League</div>
-  </body></html>`);
-  w.document.close();
-  closeExportModal();
-}
-
-function exportStandings(){
-  let html='';
-  ['A','B'].forEach(g=>{
-    const st=computeStandings(g);
-    html+=`<section><h2>Group ${g} Standings</h2><table>
-      <thead><tr><th class="num">#</th><th>Team</th><th class="num">P</th><th class="num">W</th><th class="num">D</th><th class="num">L</th><th class="num">GF</th><th class="num">GA</th><th class="num">GD</th><th class="num">Pts</th></tr></thead><tbody>`;
-    st.forEach((t,i)=>{
-      const p=i+1,pc=p===1?'p1':p===2?'p2':p===3?'p3':'po';
-      const gd=t.GF-t.GA;
-      const gdClass=gd>0?'gd-pos':gd<0?'gd-neg':'';
-      html+=`<tr class="${p<=2?'qualify-row':''}">
-        <td class="num"><span class="pos ${pc}">${p}</span></td>
-        <td><strong>${t.name}</strong></td>
-        <td class="num">${t.P}</td><td class="num">${t.W}</td><td class="num">${t.D}</td><td class="num">${t.L}</td>
-        <td class="num">${t.GF}</td><td class="num">${t.GA}</td>
-        <td class="num ${gdClass}">${gd>0?'+':''}${gd}</td>
-        <td class="num"><span class="pts">${t.Pts}</span></td>
-      </tr>`;
-    });
-    html+=`</tbody></table><div style="font-size:10px;color:#5a7a65;margin-top:6px;padding-left:4px;">🟢 Top 2 qualify for the next round</div></section>`;
-  });
-  // overall
-  const all=[...computeStandings('A'),...computeStandings('B')];
-  all.sort((a,b)=>{if(b.Pts!==a.Pts)return b.Pts-a.Pts;const gA=a.GF-a.GA,gB=b.GF-b.GA;if(gB!==gA)return gB-gA;return b.GF-a.GF;});
-  html+=`<section><h2>Overall Table</h2><table>
-    <thead><tr><th class="num">#</th><th class="num">Grp</th><th>Team</th><th class="num">P</th><th class="num">W</th><th class="num">D</th><th class="num">L</th><th class="num">GF</th><th class="num">GA</th><th class="num">GD</th><th class="num">Pts</th></tr></thead><tbody>`;
-  all.forEach((t,i)=>{
-    const p=i+1,pc=p===1?'p1':p===2?'p2':p===3?'p3':'po';
-    const gd=t.GF-t.GA;
-    const gdClass=gd>0?'gd-pos':gd<0?'gd-neg':'';
-    html+=`<tr>
-      <td class="num"><span class="pos ${pc}">${p}</span></td>
-      <td class="num"><span class="grp-${t.group.toLowerCase()}">${t.group}</span></td>
-      <td><strong>${t.name}</strong></td>
-      <td class="num">${t.P}</td><td class="num">${t.W}</td><td class="num">${t.D}</td><td class="num">${t.L}</td>
-      <td class="num">${t.GF}</td><td class="num">${t.GA}</td>
-      <td class="num ${gdClass}">${gd>0?'+':''}${gd}</td>
-      <td class="num"><span class="pts">${t.Pts}</span></td>
-    </tr>`;
-  });
-  html+=`</tbody></table></section>`;
-  openPrintWindow('Standings',html);
-}
-
-function exportFixtures(){
-  const byDate={};
-  S.matches.forEach(m=>{const d=m.date||'TBD';if(!byDate[d])byDate[d]=[];byDate[d].push(m);});
-  let html='';
-  Object.entries(byDate).forEach(([date,ms])=>{
-    html+=`<section><h2>📅 ${date}</h2><table>
-      <thead><tr><th>Round</th><th class="num">Grp</th><th>Home</th><th class="num">Score</th><th>Away</th><th>Status</th><th>Scorers / Notes</th></tr></thead><tbody>`;
-    ms.forEach(m=>{
-      const status=m.live?`<span class="status-l">🔴 Live</span>`:m.played?`<span class="status-p">✅ Full Time</span>`:`<span class="status-u">⏳ Upcoming</span>`;
-      const score=m.played||m.live?`<strong>${m.hG} – ${m.aG}</strong>`:'vs';
-      const notes=[];
-      if(m.hSc)notes.push(`⚽ ${m.hSc}`);if(m.aSc)notes.push(`⚽ ${m.aSc}`);
-      if(m.motm)notes.push(`⭐ MOTM: ${m.motm}`);if(m.gk)notes.push(`🧤 CS: ${m.gk}`);
-      if(m.hY)notes.push(`🟨 ${m.hY}`);if(m.aY)notes.push(`🟨 ${m.aY}`);
-      if(m.hR)notes.push(`🟥 ${m.hR}`);if(m.aR)notes.push(`🟥 ${m.aR}`);
-      html+=`<tr>
-        <td>${m.round||''}<br><span style="font-size:10px;color:#5a7a65;">${m.time||''}</span></td>
-        <td class="num"><span class="grp-${(m.group||'a').toLowerCase()}">${m.group||'A'}</span></td>
-        <td><strong>${tName(m.hId)}</strong></td>
-        <td class="num">${score}</td>
-        <td><strong>${tName(m.aId)}</strong></td>
-        <td>${status}</td>
-        <td style="font-size:11px;color:#5a7a65;">${notes.join(' &nbsp;·&nbsp; ')||'—'}</td>
-      </tr>`;
-    });
-    html+=`</tbody></table></section>`;
-  });
-  openPrintWindow('Fixtures & Results',html);
-}
-
-function exportScorers(){
-  // Top Scorers
-  const sc=[];S.teams.forEach(t=>Object.entries(t.scorers||{}).forEach(([n,g])=>sc.push({n,g,team:t.name})));
-  sc.sort((a,b)=>b.g-a.g);
-  let html=`<section><h2>⚽ Top Scorers</h2><table>
-    <thead><tr><th class="num">#</th><th>Player</th><th>Team</th><th class="num">Goals</th></tr></thead><tbody>`;
-  sc.length?sc.forEach((s,i)=>{html+=`<tr><td class="num"><span class="pos ${i===0?'p1':i===1?'p2':i===2?'p3':'po'}">${i+1}</span></td><td><strong>${s.n}</strong></td><td>${s.team}</td><td class="num"><strong>${s.g}</strong></td></tr>`;}):html+=`<tr><td colspan="4" style="text-align:center;color:#5a7a65;">No goals recorded yet</td></tr>`;
-  html+=`</tbody></table></section>`;
-
-  // MOTM
-  const motms=Object.entries(S.motm||{}).sort((a,b)=>b[1]-a[1]);
-  html+=`<section><h2>⭐ Man of the Match</h2><table>
-    <thead><tr><th class="num">#</th><th>Player</th><th class="num">Awards</th></tr></thead><tbody>`;
-  motms.length?motms.forEach(([n,c],i)=>{html+=`<tr><td class="num"><span class="pos ${i===0?'p1':i===1?'p2':i===2?'p3':'po'}">${i+1}</span></td><td><strong>${n}</strong></td><td class="num">${c}</td></tr>`;}):html+=`<tr><td colspan="3" style="text-align:center;color:#5a7a65;">No awards yet</td></tr>`;
-  html+=`</tbody></table></section>`;
-
-  // Clean Sheets
-  const gks=Object.entries(S.gk||{}).sort((a,b)=>b[1]-a[1]);
-  html+=`<section><h2>🧤 Clean Sheets</h2><table>
-    <thead><tr><th class="num">#</th><th>Goalkeeper</th><th class="num">Clean Sheets</th></tr></thead><tbody>`;
-  gks.length?gks.forEach(([n,c],i)=>{html+=`<tr><td class="num"><span class="pos ${i===0?'p1':i===1?'p2':i===2?'p3':'po'}">${i+1}</span></td><td><strong>${n}</strong></td><td class="num">${c}</td></tr>`;}):html+=`<tr><td colspan="3" style="text-align:center;color:#5a7a65;">No clean sheets yet</td></tr>`;
-  html+=`</tbody></table></section>`;
-
-  // Discipline
-  const disc=[];
-  S.teams.forEach(t=>{
-    Object.entries(t.yellows||{}).forEach(([n,c])=>{const e=disc.find(x=>x.n===n&&x.team===t.name);e?e.y+=c:disc.push({n,team:t.name,y:c,r:0});});
-    Object.entries(t.reds||{}).forEach(([n,c])=>{const e=disc.find(x=>x.n===n&&x.team===t.name);e?e.r+=c:disc.push({n,team:t.name,y:0,r:c});});
-  });
-  disc.sort((a,b)=>(b.r*3+b.y)-(a.r*3+a.y));
-  html+=`<section><h2>🟨 Discipline</h2><table>
-    <thead><tr><th class="num">#</th><th>Player</th><th>Team</th><th class="num">🟨 Yellows</th><th class="num">🟥 Reds</th></tr></thead><tbody>`;
-  disc.length?disc.forEach((p,i)=>{html+=`<tr><td class="num">${i+1}</td><td><strong>${p.n}</strong></td><td>${p.team}</td><td class="num">${p.y||'—'}</td><td class="num">${p.r||'—'}</td></tr>`;}):html+=`<tr><td colspan="5" style="text-align:center;color:#5a7a65;">No cards issued yet</td></tr>`;
-  html+=`</tbody></table></section>`;
-
-  openPrintWindow('Top Performers & Discipline',html);
-}
-
-function exportAllJSON(){
-  const stamp=new Date().toISOString().slice(0,19).replace('T','_').replace(/:/g,'-');
-  const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`CPL2026_Backup_${stamp}.json`;a.click();URL.revokeObjectURL(a.href);
-  closeExportModal();
-}
-
 // ── INIT ──
 updateNav();
 showTab('groups');
-//doneeee
 </script>
 </body>
 </html>
