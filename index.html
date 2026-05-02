@@ -785,16 +785,16 @@ const ti=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 // ═══════════════════════════════════════
 const DEFAULTS={
   teams:[
-    {id:1, name:'Culers FC',           group:'B',captain:'Aditya',  players:['Shivam Wagh','Aditya Todkar','Aditya Pawar','Archit Jadhav','Rushikesh Rathod','Vivek Salunke','Swapnil Patil','Yahya Shaikh'],scorers:{},yellows:{},reds:{}},
-    {id:2, name:'A3 Heroes',           group:'B',captain:'Harsh',   players:['Kabir Bagade','Vedant Jadhav','Ashish Koli','Aditya Kale','Yash Jadhav','Zayed Shaikh','Arth Gangurde','Prathmesh Sonar'],scorers:{},yellows:{},reds:{}},
-    {id:3, name:'Dynamic Destroyers',  group:'B',captain:'Bhagwan', players:['Dev Soni','Sahil Pagare','Pavan Kadam','Prathmesh Diwate','Prem Barma','Himanshu Shirsat','Ajay Gujrati','Murtaza Ujjainwala'],scorers:{},yellows:{},reds:{}},
-    {id:4, name:'Ronak Dominators',    group:'B',captain:'Sahil',   players:['Hanzala Shah','Uday Deore','Soham Magar','Hyder Ali','Ethan Kolge','Sushil Kamble','Omkar Toge','Pranav Borade'],scorers:{},yellows:{},reds:{}},
-    {id:5, name:'Elite Warriors',      group:'B',captain:'Dhruv',   players:['Kanishk Shelke','Gaurav Jadhav','Bhavarth Dive','Dnyanesh Wagh','Prem Nikam','Himanshu Kumar','Priyesh Wankhede','Bharga Khambalwar'],scorers:{},yellows:{},reds:{}},
-    {id:6, name:'Viking Warriors',     group:'A',captain:'Ashmak',  players:['Harsh Gulve','Prathamesh Bhor','Rushikesh Wagh','Suyog Khandagale','Prarik Chikale','Ashish','Nidhish Shinde','Arya Chavan'],scorers:{},yellows:{},reds:{}},
-    {id:7, name:'Urban Kickers',       group:'A',captain:'Krish',   players:['Shlok Aher','Darshan Pawar','Raj Bedmutha','Ali Abbas','Unmesh Bhamre','Om Borade','Krishna Desai','Rudra Patel'],scorers:{},yellows:{},reds:{}},
-    {id:8, name:'NSA',                 group:'A',captain:'Gurman',  players:['Raj Pande','Dev Thakur','Atharva Bagul','Kushal More','Krushna Bhosle','Bhavesh Gangurde','Soham Avhad','Swayam Jadhav'],scorers:{},yellows:{},reds:{}},
-    {id:9, name:'Top Predators',       group:'A',captain:'Ritesh',  players:['Shubh Jachak','Addy Shelke','Salik Parhan','Atharva Godse','Pranav Bachav','Arya Agarkar','Shreerang Ganore','Ravin Sonar'],scorers:{},yellows:{},reds:{}},
-    {id:10,name:'Ishan FC',            group:'A',captain:'Khemraj', players:['Siddhant Ghangale','Pranav Rajput','Kalpesh Porje','Arjun Tupe','Ishan Nair','Aditya Sonawne','Vinay Thakkar','Urjit Khairnar'],scorers:{},yellows:{},reds:{}},
+    {id:1, name:'Culers FC',           group:'B',captain:'Aditya',  players:['Aditya Todkar','Shivam Wagh','Aditya Pawar','Archit Jadhav','Rushikesh Rathod','Vivek Salunke','Swapnil Patil','Yahya Shaikh'],scorers:{},yellows:{},reds:{}},
+    {id:2, name:'A3 Heroes',           group:'B',captain:'Harsh',   players:['Harsh','Kabir Bagade','Vedant Jadhav','Ashish Koli','Aditya Kale','Yash Jadhav','Zayed Shaikh','Arth Gangurde','Prathmesh Sonar'],scorers:{},yellows:{},reds:{}},
+    {id:3, name:'Dynamic Destroyers',  group:'B',captain:'Bhagwan', players:['Bhagwan','Dev Soni','Sahil Pagare','Pavan Kadam','Prathmesh Diwate','Prem Barma','Himanshu Shirsat','Ajay Gujrati','Murtaza Ujjainwala'],scorers:{},yellows:{},reds:{}},
+    {id:4, name:'Ronak Dominators',    group:'B',captain:'Sahil',   players:['Sahil','Hanzala Shah','Uday Deore','Soham Magar','Hyder Ali','Ethan Kolge','Sushil Kamble','Omkar Toge','Pranav Borade'],scorers:{},yellows:{},reds:{}},
+    {id:5, name:'Elite Warriors',      group:'B',captain:'Dhruv',   players:['Dhruv','Kanishk Shelke','Gaurav Jadhav','Bhavarth Dive','Dnyanesh Wagh','Prem Nikam','Himanshu Kumar','Priyesh Wankhede','Bharga Khambalwar'],scorers:{},yellows:{},reds:{}},
+    {id:6, name:'Viking Warriors',     group:'A',captain:'Ashmak',  players:['Ashmak','Harsh Gulve','Prathamesh Bhor','Rushikesh Wagh','Suyog Khandagale','Prarik Chikale','Ashish','Nidhish Shinde','Arya Chavan'],scorers:{},yellows:{},reds:{}},
+    {id:7, name:'Urban Kickers',       group:'A',captain:'Krish',   players:['Krish','Shlok Aher','Darshan Pawar','Raj Bedmutha','Ali Abbas','Unmesh Bhamre','Om Borade','Krishna Desai','Rudra Patel'],scorers:{},yellows:{},reds:{}},
+    {id:8, name:'NSA',                 group:'A',captain:'Gurman',  players:['Gurman','Raj Pande','Dev Thakur','Atharva Bagul','Kushal More','Krushna Bhosle','Bhavesh Gangurde','Soham Avhad','Swayam Jadhav'],scorers:{},yellows:{},reds:{}},
+    {id:9, name:'Top Predators',       group:'A',captain:'Ritesh',  players:['Ritesh','Shubh Jachak','Addy Shelke','Salik Parhan','Atharva Godse','Pranav Bachav','Arya Agarkar','Shreerang Ganore','Ravin Sonar'],scorers:{},yellows:{},reds:{}},
+    {id:10,name:'Ishan FC',            group:'A',captain:'Khemraj', players:['Khemraj','Siddhant Ghangale','Pranav Rajput','Kalpesh Porje','Arjun Tupe','Ishan Nair','Aditya Sonawne','Vinay Thakkar','Urjit Khairnar'],scorers:{},yellows:{},reds:{}},
   ],
   matches:[
     {id:1, hId:1, aId:2,  hG:0,aG:0,played:false,live:false,date:'May 2',time:'4:00 – 4:20 PM', round:'Match 1', group:'B',hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:''},
@@ -833,9 +833,17 @@ function migrateState(raw){
   if(!raw)raw=JSON.parse(JSON.stringify(DEFAULTS));
   raw.teams.forEach(t=>{
     if(!t.group)t.group='A';
-    if(!t.players||!t.players.length){
-      const def=DEFAULTS.teams.find(d=>d.id===t.id);
-      if(def&&def.players)t.players=def.players;else t.players=[];
+    // SAFE PLAYER MERGE: only add missing players, never remove or reorder existing
+    const def=DEFAULTS.teams.find(d=>d.id===t.id);
+    if(def&&def.players){
+      if(!t.players)t.players=[];
+      def.players.forEach(p=>{
+        if(!t.players.includes(p)){
+          // Insert icon player (first in DEFAULTS) at front if not present
+          if(def.players.indexOf(p)===0) t.players.unshift(p);
+          else t.players.push(p);
+        }
+      });
     }
   });
   raw.matches.forEach(m=>{
@@ -843,6 +851,8 @@ function migrateState(raw){
     if(!m.group)m.group='A';
     ['hSc','aSc','hY','aY','hR','aR','motm','gk'].forEach(k=>{if(m[k]===undefined)m[k]='';});
   });
+  if(!raw.nextTid)raw.nextTid=DEFAULTS.nextTid||11;
+  if(!raw.nextMid)raw.nextMid=DEFAULTS.nextMid||21;
   return raw;
 }
 
@@ -855,20 +865,26 @@ function setRtStatus(state){
 }
 
 async function loadState(){
-  // Always load PIN from localStorage (admin-only, device-specific)
   try{adminPin=localStorage.getItem('cpl26pin')||'0205';}catch(e){adminPin='0205';}
 
   setRtStatus('connecting');
   try{
     const{data,error}=await supa.from(DB_TABLE).select('state').eq('id',DB_ROW_ID).single();
     if(error&&error.code==='PGRST116'){
-      // Row doesn't exist yet — create it with defaults
+      // Row doesn't exist yet — create with defaults
       S=migrateState(null);
       await supa.from(DB_TABLE).insert({id:DB_ROW_ID,state:S});
     } else if(error){
       throw error;
     } else {
+      const before=JSON.stringify(data.state?.teams?.map(t=>t.players));
       S=migrateState(data.state);
+      const after=JSON.stringify(S.teams.map(t=>t.players));
+      // If migration added new players, push silently back to Supabase
+      if(before!==after){
+        console.log('🔄 Player roster migration applied — syncing to Supabase…');
+        await supa.from(DB_TABLE).upsert({id:DB_ROW_ID,state:S,updated_at:new Date().toISOString()});
+      }
     }
     setRtStatus('connected');
   } catch(e){
