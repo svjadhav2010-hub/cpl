@@ -246,6 +246,36 @@ input::placeholder{color:#aac8b8;font-weight:500;}
 /* ── DANGER ZONE ── */
 .danger-zone{border:2px solid #fca5a5;border-radius:14px;padding:18px;background:#fff5f5;}
 .danger-zone h3{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+
+/* ── TOP SCORER SPOTLIGHT ── */
+.ts-spotlight{background:linear-gradient(135deg,#0f6b2e 0%,#1db954 60%,#17a847 100%);border-radius:16px;padding:18px 22px;margin-bottom:22px;display:flex;align-items:center;gap:18px;box-shadow:0 6px 24px rgba(29,185,84,.28);position:relative;overflow:hidden;}
+.ts-spotlight::before{content:'⚽';position:absolute;right:-10px;top:-14px;font-size:110px;opacity:.08;line-height:1;pointer-events:none;}
+.ts-crown{font-size:40px;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2));}
+.ts-avatar{width:58px;height:58px;border-radius:50%;background:rgba(255,255,255,.22);border:3px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:18px;color:#fff;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.ts-info{flex:1;min-width:0;}
+.ts-label{font-size:10px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px;}
+.ts-name{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:#fff;letter-spacing:1px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ts-team{font-size:12px;color:rgba(255,255,255,.8);font-weight:700;margin-top:4px;}
+.ts-goals{flex-shrink:0;text-align:center;}
+.ts-goals-num{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,.2);}
+.ts-goals-lbl{font-size:10px;color:rgba(255,255,255,.75);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px;}
+.ts-empty{background:linear-gradient(135deg,var(--lg),var(--mlg));border:2px dashed var(--border);border-radius:16px;padding:20px;margin-bottom:22px;text-align:center;color:var(--muted);font-size:13px;font-weight:700;}
+@media(max-width:500px){
+  .ts-spotlight{padding:14px 16px;gap:12px;}
+  .ts-goals-num{font-size:40px;}
+  .ts-name{font-size:21px;}
+  .ts-avatar{width:46px;height:46px;font-size:14px;}
+}
+
+/* ── SCORER DROPDOWNS IN MODAL ── */
+.scorer-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;min-height:28px;}
+.stag{display:inline-flex;align-items:center;gap:4px;background:var(--lg);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:700;color:var(--dg);}
+.stag button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;line-height:1;padding:0 2px;}
+.stag button:hover{color:var(--red);}
+.scorer-add-row{display:flex;gap:6px;margin-top:6px;align-items:center;}
+.scorer-add-row select{flex:1;}
+.scorer-add-btn{background:var(--g);border:none;color:#fff;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.scorer-add-btn:hover{background:var(--dg);}
 .admin-only-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .admin-only-row:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
 
@@ -362,7 +392,7 @@ input::placeholder{color:#aac8b8;font-weight:500;}
       </div>
 
       <!-- Score inputs -->
-      <div class="sm-section">⚽ Score</div>
+      <div class="sm-section">⚽ Score <span style="font-size:10px;font-weight:600;color:var(--muted);letter-spacing:0;text-transform:none;">(auto-updates from scorers below)</span></div>
       <div class="score-row">
         <div class="score-team-col">
           <div class="score-team-name" id="sm-hname">HOME</div>
@@ -379,42 +409,74 @@ input::placeholder{color:#aac8b8;font-weight:500;}
       <div class="sm-section" style="margin-top:4px;">📋 Match Details</div>
       <div class="frow">
         <div>
-          <label class="flabel" id="sm-hsc-lbl">Home Scorers</label>
-          <input type="text" id="sm-hsc" placeholder="e.g. Rahul, Amit">
+          <label class="flabel" id="sm-hsc-lbl">⚽ Home Scorers</label>
+          <div class="scorer-add-row">
+            <select id="sm-hsc-sel"></select>
+            <button class="scorer-add-btn" onclick="addScorerTag('h')">+ Add</button>
+          </div>
+          <div class="scorer-tags" id="sm-hsc-tags"></div>
+          <input type="hidden" id="sm-hsc">
         </div>
         <div>
-          <label class="flabel" id="sm-asc-lbl">Away Scorers</label>
-          <input type="text" id="sm-asc" placeholder="e.g. Vikas">
+          <label class="flabel" id="sm-asc-lbl">⚽ Away Scorers</label>
+          <div class="scorer-add-row">
+            <select id="sm-asc-sel"></select>
+            <button class="scorer-add-btn" onclick="addScorerTag('a')">+ Add</button>
+          </div>
+          <div class="scorer-tags" id="sm-asc-tags"></div>
+          <input type="hidden" id="sm-asc">
         </div>
       </div>
       <div class="frow">
         <div>
           <label class="flabel">🟨 Yellows (Home)</label>
-          <input type="text" id="sm-hy" placeholder="Names, comma sep">
+          <div class="scorer-add-row">
+            <select id="sm-hy-sel"></select>
+            <button class="scorer-add-btn" onclick="addCardTag('hy')">+ Add</button>
+          </div>
+          <div class="scorer-tags" id="sm-hy-tags"></div>
+          <input type="hidden" id="sm-hy">
         </div>
         <div>
           <label class="flabel">🟨 Yellows (Away)</label>
-          <input type="text" id="sm-ay" placeholder="Names, comma sep">
+          <div class="scorer-add-row">
+            <select id="sm-ay-sel"></select>
+            <button class="scorer-add-btn" onclick="addCardTag('ay')">+ Add</button>
+          </div>
+          <div class="scorer-tags" id="sm-ay-tags"></div>
+          <input type="hidden" id="sm-ay">
         </div>
       </div>
       <div class="frow">
         <div>
           <label class="flabel">🟥 Reds (Home)</label>
-          <input type="text" id="sm-hr" placeholder="Names">
+          <div class="scorer-add-row">
+            <select id="sm-hr-sel"></select>
+            <button class="scorer-add-btn" onclick="addCardTag('hr')">+ Add</button>
+          </div>
+          <div class="scorer-tags" id="sm-hr-tags"></div>
+          <input type="hidden" id="sm-hr">
         </div>
         <div>
           <label class="flabel">🟥 Reds (Away)</label>
-          <input type="text" id="sm-ar" placeholder="Names">
+          <div class="scorer-add-row">
+            <select id="sm-ar-sel"></select>
+            <button class="scorer-add-btn" onclick="addCardTag('ar')">+ Add</button>
+          </div>
+          <div class="scorer-tags" id="sm-ar-tags"></div>
+          <input type="hidden" id="sm-ar">
         </div>
       </div>
       <div class="frow">
         <div>
           <label class="flabel">⭐ Man of the Match</label>
-          <input type="text" id="sm-motm" placeholder="Player name">
+          <select id="sm-motm-sel" onchange="document.getElementById('sm-motm').value=this.value"></select>
+          <input type="hidden" id="sm-motm">
         </div>
         <div>
           <label class="flabel">🧤 Clean Sheet GK</label>
-          <input type="text" id="sm-gk" placeholder="GK name">
+          <select id="sm-gk-sel" onchange="document.getElementById('sm-gk').value=this.value"></select>
+          <input type="hidden" id="sm-gk">
         </div>
       </div>
 
@@ -505,6 +567,9 @@ input::placeholder{color:#aac8b8;font-weight:500;}
   <!-- ── GROUPS TAB ── -->
   <div id="tab-groups">
     <div class="stitle">🏆 League Standings <span class="badge" id="live-badge" style="display:none;">LIVE</span></div>
+
+    <!-- Top Scorer Spotlight -->
+    <div id="ts-spotlight-wrap"></div>
 
     <!-- Stats strip -->
     <div class="stats-strip" id="stats-strip"></div>
@@ -711,16 +776,16 @@ const ti=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 // ═══════════════════════════════════════
 const DEFAULTS={
   teams:[
-    {id:1, name:'Culers FC',           group:'B',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:2, name:'A3 Heroes',           group:'B',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:3, name:'Dynamic Destroyers',  group:'B',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:4, name:'Ronak Dominators',    group:'B',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:5, name:'Elite Warriors',      group:'B',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:6, name:'Viking Warriors',     group:'A',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:7, name:'Urban Kickers',       group:'A',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:8, name:'NSA',                 group:'A',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:9, name:'Top Predators',       group:'A',captain:'',scorers:{},yellows:{},reds:{}},
-    {id:10,name:'Ishan FC',            group:'A',captain:'',scorers:{},yellows:{},reds:{}},
+    {id:1, name:'Culers FC',           group:'B',captain:'Aditya',  players:['Shivam Wagh','Aditya Todkar','Aditya Pawar','Archit Jadhav','Rushikesh Rathod','Vivek Salunke','Swapnil Patil','Yahya Shaikh'],scorers:{},yellows:{},reds:{}},
+    {id:2, name:'A3 Heroes',           group:'B',captain:'Harsh',   players:['Kabir Bagade','Vedant Jadhav','Ashish Koli','Aditya Kale','Yash Jadhav','Zayed Shaikh','Arth Gangurde','Prathmesh Sonar'],scorers:{},yellows:{},reds:{}},
+    {id:3, name:'Dynamic Destroyers',  group:'B',captain:'Bhagwan', players:['Dev Soni','Sahil Pagare','Pavan Kadam','Prathmesh Diwate','Prem Barma','Himanshu Shirsat','Ajay Gujrati','Murtaza Ujjainwala'],scorers:{},yellows:{},reds:{}},
+    {id:4, name:'Ronak Dominators',    group:'B',captain:'Sahil',   players:['Hanzala Shah','Uday Deore','Soham Magar','Hyder Ali','Ethan Kolge','Sushil Kamble','Omkar Toge','Pranav Borade'],scorers:{},yellows:{},reds:{}},
+    {id:5, name:'Elite Warriors',      group:'B',captain:'Dhruv',   players:['Kanishk Shelke','Gaurav Jadhav','Bhavarth Dive','Dnyanesh Wagh','Prem Nikam','Himanshu Kumar','Priyesh Wankhede','Bharga Khambalwar'],scorers:{},yellows:{},reds:{}},
+    {id:6, name:'Viking Warriors',     group:'A',captain:'Ashmak',  players:['Harsh Gulve','Prathamesh Bhor','Rushikesh Wagh','Suyog Khandagale','Prarik Chikale','Ashish','Nidhish Shinde','Arya Chavan'],scorers:{},yellows:{},reds:{}},
+    {id:7, name:'Urban Kickers',       group:'A',captain:'Krish',   players:['Shlok Aher','Darshan Pawar','Raj Bedmutha','Ali Abbas','Unmesh Bhamre','Om Borade','Krishna Desai','Rudra Patel'],scorers:{},yellows:{},reds:{}},
+    {id:8, name:'NSA',                 group:'A',captain:'Gurman',  players:['Raj Pande','Dev Thakur','Atharva Bagul','Kushal More','Krushna Bhosle','Bhavesh Gangurde','Soham Avhad','Swayam Jadhav'],scorers:{},yellows:{},reds:{}},
+    {id:9, name:'Top Predators',       group:'A',captain:'Ritesh',  players:['Shubh Jachak','Addy Shelke','Salik Parhan','Atharva Godse','Pranav Bachav','Arya Agarkar','Shreerang Ganore','Ravin Sonar'],scorers:{},yellows:{},reds:{}},
+    {id:10,name:'Ishan FC',            group:'A',captain:'Khemraj', players:['Siddhant Ghangale','Pranav Rajput','Kalpesh Porje','Arjun Tupe','Ishan Nair','Aditya Sonawne','Vinay Thakkar','Urjit Khairnar'],scorers:{},yellows:{},reds:{}},
   ],
   matches:[
     {id:1, hId:1, aId:2,  hG:0,aG:0,played:false,live:false,date:'May 2',time:'4:00 – 4:20 PM', round:'Match 1', group:'B',hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:''},
@@ -750,6 +815,13 @@ function loadState(){
   // ensure fields exist
   S.teams.forEach(t=>{if(!t.group)t.group='A';});
   S.matches.forEach(m=>{if(m.live===undefined)m.live=false;if(!m.group)m.group='A';['hSc','aSc','hY','aY','hR','aR','motm','gk'].forEach(k=>{if(m[k]===undefined)m[k]='';});});
+  // migrate: ensure teams have players arrays from DEFAULTS
+  S.teams.forEach(t=>{
+    if(!t.players||!t.players.length){
+      const def=DEFAULTS.teams.find(d=>d.id===t.id);
+      if(def&&def.players)t.players=def.players;else t.players=[];
+    }
+  });
   try{adminPin=localStorage.getItem('cpl26pin')||'0205';}catch(e){adminPin='0205';}
 }
 function save(){
@@ -1030,27 +1102,175 @@ function renderFixtures(){
 //  SCORE MODAL
 // ═══════════════════════════════════════
 let activeMatchId=null;
+// ── Tag helpers for scorer/card dropdowns ──
+function getTeamPlayers(teamId){
+  const t=S.teams.find(t=>t.id===teamId);
+  return(t&&t.players&&t.players.length)?t.players:[];
+}
+function buildDropdown(selId, players){
+  const el=document.getElementById(selId);if(!el)return;
+  el.innerHTML=`<option value="">— Select player —</option>`+players.map(p=>`<option value="${p}">${p}</option>`).join('');
+}
+function syncHidden(tagsId, hidId){
+  const tags=document.getElementById(tagsId);
+  const hid=document.getElementById(hidId);
+  if(!tags||!hid)return;
+  // For scorer tags, repeat the name once per goal count
+  const isScorer=tagsId.includes('hsc')||tagsId.includes('asc');
+  const names=[];
+  [...tags.querySelectorAll('.stag')].forEach(t=>{
+    const name=t.dataset.name;
+    if(isScorer){
+      const cnt=t.querySelector('.stag-cnt');
+      const goals=cnt?+cnt.textContent:1;
+      for(let i=0;i<goals;i++)names.push(name);
+    } else {
+      names.push(name);
+    }
+  });
+  hid.value=names.join(', ');
+}
+function recalcScoreFromTags(){
+  // Count total goals from tags and update score inputs
+  const hTags=document.getElementById('sm-hsc-tags');
+  const aTags=document.getElementById('sm-asc-tags');
+  if(!hTags||!aTags)return;
+  let hGoals=0,aGoals=0;
+  [...hTags.querySelectorAll('.stag')].forEach(t=>{const cnt=t.querySelector('.stag-cnt');hGoals+=cnt?+cnt.textContent:1;});
+  [...aTags.querySelectorAll('.stag')].forEach(t=>{const cnt=t.querySelector('.stag-cnt');aGoals+=cnt?+cnt.textContent:1;});
+  const hgInp=document.getElementById('sm-hg');
+  const agInp=document.getElementById('sm-ag');
+  if(hgInp)hgInp.value=hGoals;
+  if(agInp)agInp.value=aGoals;
+}
+function addScorerTag(side){
+  const selId=side==='h'?'sm-hsc-sel':'sm-asc-sel';
+  const tagsId=side==='h'?'sm-hsc-tags':'sm-asc-tags';
+  const hidId=side==='h'?'sm-hsc':'sm-asc';
+  const sel=document.getElementById(selId);
+  if(!sel||!sel.value)return;
+  const name=sel.value;
+  const tags=document.getElementById(tagsId);
+  // Check if already added — increment count
+  const existing=[...tags.querySelectorAll('.stag')].find(t=>t.dataset.name===name);
+  if(existing){
+    const cnt=existing.querySelector('.stag-cnt');
+    cnt.textContent=+cnt.textContent+1;
+  } else {
+    const tag=document.createElement('span');tag.className='stag';tag.dataset.name=name;
+    tag.innerHTML=`⚽ ${name} <span class="stag-cnt" style="background:var(--g);color:#fff;border-radius:10px;padding:0 6px;font-size:11px;margin-left:2px;">1</span><button onclick="removeScorerTag(this,'${tagsId}','${hidId}')" title="Remove">×</button>`;
+    tags.appendChild(tag);
+  }
+  syncHidden(tagsId,hidId);
+  recalcScoreFromTags();
+  sel.value='';
+}
+function removeScorerTag(btn,tagsId,hidId){
+  // Decrement count first; only remove tag when count hits 0
+  const tag=btn.parentElement;
+  const cnt=tag.querySelector('.stag-cnt');
+  if(cnt&&+cnt.textContent>1){
+    cnt.textContent=+cnt.textContent-1;
+  } else {
+    tag.remove();
+  }
+  syncHidden(tagsId,hidId);
+  recalcScoreFromTags();
+}
+function addCardTag(prefix){
+  const selId='sm-'+prefix+'-sel';
+  const tagsId='sm-'+prefix+'-tags';
+  const hidId='sm-'+prefix;
+  const sel=document.getElementById(selId);
+  if(!sel||!sel.value)return;
+  const name=sel.value;
+  const tags=document.getElementById(tagsId);
+  if([...tags.querySelectorAll('.stag')].find(t=>t.dataset.name===name))return; // no duplicates for cards
+  const isYellow=prefix.includes('y');
+  const tag=document.createElement('span');tag.className='stag';tag.dataset.name=name;
+  tag.innerHTML=`${isYellow?'🟨':'🟥'} ${name} <button onclick="removeCardTag(this,'${tagsId}','${hidId}')" title="Remove">×</button>`;
+  tags.appendChild(tag);
+  syncHidden(tagsId,hidId);
+  sel.value='';
+}
+function removeCardTag(btn,tagsId,hidId){
+  btn.parentElement.remove();
+  syncHidden(tagsId,hidId);
+}
+function loadTagsFromString(str, tagsId, hidId, type){
+  // type: 'scorer' or 'card'
+  const tags=document.getElementById(tagsId);if(!tags)return;
+  tags.innerHTML='';
+  if(!str)return;
+  str.split(',').map(s=>s.trim()).filter(Boolean).forEach(entry=>{
+    if(type==='scorer'){
+      // entry might be "Name 2" style — but our new system just stores names
+      const name=entry.replace(/\d+$/,'').trim();
+      if(!name)return;
+      const existing=[...tags.querySelectorAll('.stag')].find(t=>t.dataset.name===name);
+      if(existing){const cnt=existing.querySelector('.stag-cnt');if(cnt)cnt.textContent=+cnt.textContent+1;}
+      else{const tag=document.createElement('span');tag.className='stag';tag.dataset.name=name;
+        tag.innerHTML=`⚽ ${name} <span class="stag-cnt" style="background:var(--g);color:#fff;border-radius:10px;padding:0 6px;font-size:11px;margin-left:2px;">1</span><button onclick="removeScorerTag(this,'${tagsId}','${hidId}')" title="Remove">×</button>`;tags.appendChild(tag);}
+    } else {
+      const tag=document.createElement('span');tag.className='stag';tag.dataset.name=entry;
+      const isY=tagsId.includes('hy')||tagsId.includes('ay');
+      tag.innerHTML=`${isY?'🟨':'🟥'} ${entry} <button onclick="removeCardTag(this,'${tagsId}','${hidId}')" title="Remove">×</button>`;tags.appendChild(tag);
+    }
+  });
+  syncHidden(tagsId,hidId);
+}
+function buildAllPlayersDropdown(selId, hPlayers, aPlayers){
+  const el=document.getElementById(selId);if(!el)return;
+  el.innerHTML=`<option value="">— Select player —</option>`
+    +`<optgroup label="Both Teams">`
+    +[...hPlayers,...aPlayers].map(p=>`<option value="${p}">${p}</option>`).join('')
+    +`</optgroup>`;
+}
+
 function openScoreModal(id){
   activeMatchId=id;
   const m=S.matches.find(m=>m.id===id);if(!m)return;
   const hName=tName(m.hId),aName=tName(m.aId);
+  const hPlayers=getTeamPlayers(m.hId);
+  const aPlayers=getTeamPlayers(m.aId);
+
   document.getElementById('sm-title').textContent=m.live?'Update Live Score':m.played?'Edit Result':'Enter Score';
   document.getElementById('sm-teams').textContent=`${hName}  vs  ${aName}`;
   document.getElementById('sm-meta').textContent=`${m.round} · ${m.time||''} · Group ${m.group}`;
   document.getElementById('sm-hname').textContent=hName;
   document.getElementById('sm-aname').textContent=aName;
-  document.getElementById('sm-hsc-lbl').textContent=hName+' Scorers';
-  document.getElementById('sm-asc-lbl').textContent=aName+' Scorers';
+  document.getElementById('sm-hsc-lbl').textContent='⚽ '+hName+' Scorers';
+  document.getElementById('sm-asc-lbl').textContent='⚽ '+aName+' Scorers';
   document.getElementById('sm-hg').value=m.hG||0;
   document.getElementById('sm-ag').value=m.aG||0;
-  document.getElementById('sm-hsc').value=m.hSc||'';
-  document.getElementById('sm-asc').value=m.aSc||'';
-  document.getElementById('sm-hy').value=m.hY||'';
-  document.getElementById('sm-ay').value=m.aY||'';
-  document.getElementById('sm-hr').value=m.hR||'';
-  document.getElementById('sm-ar').value=m.aR||'';
-  document.getElementById('sm-motm').value=m.motm||'';
-  document.getElementById('sm-gk').value=m.gk||'';
+
+  // Build player dropdowns
+  buildDropdown('sm-hsc-sel', hPlayers);
+  buildDropdown('sm-asc-sel', aPlayers);
+  buildDropdown('sm-hy-sel', hPlayers);
+  buildDropdown('sm-ay-sel', aPlayers);
+  buildDropdown('sm-hr-sel', hPlayers);
+  buildDropdown('sm-ar-sel', aPlayers);
+  buildAllPlayersDropdown('sm-motm-sel', hPlayers, aPlayers);
+  buildAllPlayersDropdown('sm-gk-sel', hPlayers, aPlayers);
+
+  // Load existing values as tags
+  loadTagsFromString(m.hSc,'sm-hsc-tags','sm-hsc','scorer');
+  loadTagsFromString(m.aSc,'sm-asc-tags','sm-asc','scorer');
+  loadTagsFromString(m.hY,'sm-hy-tags','sm-hy','card');
+  loadTagsFromString(m.aY,'sm-ay-tags','sm-ay','card');
+  loadTagsFromString(m.hR,'sm-hr-tags','sm-hr','card');
+  loadTagsFromString(m.aR,'sm-ar-tags','sm-ar','card');
+
+  // After loading scorer tags, recalc score fields from them
+  recalcScoreFromTags();
+
+  // MOTM & GK selects
+  const motmSel=document.getElementById('sm-motm-sel');
+  const gkSel=document.getElementById('sm-gk-sel');
+  if(motmSel){motmSel.value=m.motm||'';document.getElementById('sm-motm').value=m.motm||'';}
+  if(gkSel){gkSel.value=m.gk||'';document.getElementById('sm-gk').value=m.gk||'';}
+
   // show/hide buttons based on state
   document.getElementById('sm-live-btn').style.display=m.played&&!m.live?'none':'';
   document.getElementById('sm-live-btn').textContent=m.live?'🔴 Update Live':'🔴 Set Live';
@@ -1062,6 +1282,16 @@ function closeScoreModal(){document.getElementById('score-overlay').classList.ad
 
 function saveScore(goLive){
   const m=S.matches.find(m=>m.id===activeMatchId);if(!m)return;
+  // Sync all tag-based hidden fields first
+  syncHidden('sm-hsc-tags','sm-hsc');syncHidden('sm-asc-tags','sm-asc');
+  syncHidden('sm-hy-tags','sm-hy');syncHidden('sm-ay-tags','sm-ay');
+  syncHidden('sm-hr-tags','sm-hr');syncHidden('sm-ar-tags','sm-ar');
+  // Sync MOTM & GK from selects
+  const motmSel=document.getElementById('sm-motm-sel');
+  const gkSel=document.getElementById('sm-gk-sel');
+  if(motmSel)document.getElementById('sm-motm').value=motmSel.value;
+  if(gkSel)document.getElementById('sm-gk').value=gkSel.value;
+
   const hG=+document.getElementById('sm-hg').value||0;
   const aG=+document.getElementById('sm-ag').value||0;
   const hSc=document.getElementById('sm-hsc').value.trim();
@@ -1115,9 +1345,8 @@ function revertStats(m){
 }
 function revertScorers(tid,str){
   if(!str)return;const t=S.teams.find(t=>t.id===tid);if(!t||!t.scorers)return;
-  str.split(',').map(s=>s.trim()).filter(Boolean).forEach(e=>{
-    const n=e.replace(/\d+['']?/g,'').replace(/[()]/g,'').trim();
-    if(n&&t.scorers[n]){t.scorers[n]--;if(t.scorers[n]<=0)delete t.scorers[n];}
+  str.split(',').map(s=>s.trim()).filter(Boolean).forEach(name=>{
+    if(name&&t.scorers[name]){t.scorers[name]--;if(t.scorers[name]<=0)delete t.scorers[name];}
   });
 }
 function revertCards(tid,str,type){
@@ -1127,9 +1356,9 @@ function revertCards(tid,str,type){
 function updScorers(tid,str){
   if(!str)return;const t=S.teams.find(t=>t.id===tid);if(!t)return;
   if(!t.scorers)t.scorers={};
-  str.split(',').map(s=>s.trim()).filter(Boolean).forEach(e=>{
-    const n=e.replace(/\d+['']?/g,'').replace(/[()]/g,'').trim();
-    if(n)t.scorers[n]=(t.scorers[n]||0)+1;
+  // str may be "Name1, Name1, Name2" (same name repeated for multiple goals)
+  str.split(',').map(s=>s.trim()).filter(Boolean).forEach(name=>{
+    if(name)t.scorers[name]=(t.scorers[name]||0)+1;
   });
 }
 function updCards(tid,str,type){
@@ -1226,7 +1455,7 @@ function addTeam(){
   const group=document.getElementById('new-group').value;
   if(!name){alert('Enter a team name.');return;}
   if(S.teams.find(t=>t.name.toLowerCase()===name.toLowerCase())){alert('Team already exists!');return;}
-  S.teams.push({id:S.nextTid++,name,group,captain,scorers:{},yellows:{},reds:{}});
+  S.teams.push({id:S.nextTid++,name,group,captain,players:[],scorers:{},yellows:{},reds:{}});
   document.getElementById('new-team').value='';document.getElementById('new-captain').value='';
   save();renderAll();
 }
@@ -1290,10 +1519,46 @@ function fullReset(){
 }
 
 // ═══════════════════════════════════════
+//  TOP SCORER SPOTLIGHT
+// ═══════════════════════════════════════
+function renderTopScorer(){
+  const wrap=document.getElementById('ts-spotlight-wrap');if(!wrap)return;
+  const all=[];
+  S.teams.forEach(t=>Object.entries(t.scorers||{}).forEach(([n,g])=>all.push({n,g,team:t.name,tid:t.id})));
+  all.sort((a,b)=>b.g-a.g);
+  if(!all.length||all[0].g===0){
+    wrap.innerHTML=`<div class="ts-empty">⚽ No goals recorded yet — top scorer will appear here once matches are played.</div>`;
+    return;
+  }
+  const top=all[0];
+  const idx=S.teams.findIndex(t=>t.id===top.tid);
+  const color=tc(idx);
+  const initials=top.n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  // Check for ties
+  const tied=all.filter(s=>s.g===top.g);
+  const tieNote=tied.length>1?`<div class="ts-team" style="color:rgba(255,255,255,.65);font-size:11px;margin-top:2px;">Tied with ${tied.length-1} other${tied.length>2?'s':''}</div>`:'';
+  wrap.innerHTML=`<div class="ts-spotlight">
+    <div class="ts-crown">👑</div>
+    <div class="ts-avatar" style="background:${color}44;border-color:rgba(255,255,255,.55);">${initials}</div>
+    <div class="ts-info">
+      <div class="ts-label">🏆 Top Scorer</div>
+      <div class="ts-name">${top.n}</div>
+      <div class="ts-team">${top.team}</div>
+      ${tieNote}
+    </div>
+    <div class="ts-goals">
+      <div class="ts-goals-num">${top.g}</div>
+      <div class="ts-goals-lbl">⚽ Goal${top.g!==1?'s':''}</div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════
 //  RENDER ALL
 // ═══════════════════════════════════════
 function renderAll(){
   renderStats();
+  renderTopScorer();
   renderStandings();
   renderFixtures();
   renderScorers();
