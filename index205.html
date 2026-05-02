@@ -251,6 +251,35 @@ input::placeholder{color:#aac8b8;font-weight:500;}
 @keyframes rt-pulse{0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,.25);}50%{box-shadow:0 0 0 6px rgba(74,222,128,.05);}}
 .rt-badge{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;display:flex;align-items:center;gap:4px;white-space:nowrap;}
 
+/* ── KNOCKOUT BRACKET ── */
+.ko-section{margin-top:28px;}
+.ko-header{background:linear-gradient(135deg,#0f6b2e,#1db954);border-radius:12px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:12px;}
+.ko-header h2{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:1px;margin:0;}
+.ko-header span{font-size:22px;}
+.ko-sub{font-size:11px;color:rgba(255,255,255,.75);font-weight:700;margin-top:2px;}
+.ko-card{border-radius:14px;border:2px solid var(--border);background:#fff;overflow:hidden;margin-bottom:14px;transition:box-shadow .2s;}
+.ko-card.ko-pending{border-style:dashed;opacity:.82;}
+.ko-card.ko-final{border-color:#f59e0b;box-shadow:0 4px 18px rgba(245,158,11,.18);}
+.ko-card.ko-final .ko-badge{background:linear-gradient(135deg,#f59e0b,#d97706);}
+.ko-meta{display:flex;align-items:center;gap:8px;padding:10px 16px 0;flex-wrap:wrap;}
+.ko-badge{background:linear-gradient(135deg,#0f6b2e,#1db954);color:#fff;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:900;letter-spacing:.5px;}
+.ko-fixture{display:flex;align-items:center;gap:10px;padding:14px 16px;justify-content:space-between;}
+.ko-team{flex:1;display:flex;align-items:center;gap:10px;}
+.ko-team.away{flex-direction:row-reverse;text-align:right;}
+.ko-team-name{font-weight:900;font-size:15px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.ko-team-name.tbd{color:var(--muted);font-style:italic;font-weight:700;font-size:13px;}
+.ko-seed{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.5px;margin-top:1px;}
+.ko-score{min-width:90px;text-align:center;background:var(--lg);border:2px solid var(--border);border-radius:10px;padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;color:var(--dg);}
+.ko-score.live-score{background:#fff0f0;border-color:#fca5a5;color:var(--red);animation:ko-blink 1.4s ease-in-out infinite;}
+.ko-score.pending-score{color:var(--muted);font-size:16px;font-weight:700;letter-spacing:0;}
+@keyframes ko-blink{0%,100%{opacity:1;}50%{opacity:.6;}}
+.ko-winner-banner{background:linear-gradient(135deg,#fef3c7,#fde68a);border-top:2px solid #f59e0b;padding:10px 16px;display:flex;align-items:center;gap:8px;font-weight:900;font-size:14px;color:#92400e;}
+.ko-qualifier{font-size:11px;font-weight:800;color:var(--muted);padding:6px 16px 10px;border-top:1px solid var(--border);background:var(--lg);}
+
+.gpill-ko{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border:none;}
+.fcard.ko-fx{border-color:#fcd34d;background:linear-gradient(135deg,#fffbeb,#fff);}
+.fcard.ko-fx .rpill{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
+
 /* ── DANGER ZONE ── */
 .danger-zone{border:2px solid #fca5a5;border-radius:14px;padding:18px;background:#fff5f5;}
 .danger-zone h3{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;color:var(--red);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
@@ -635,9 +664,20 @@ input::placeholder{color:#aac8b8;font-weight:500;}
         <tbody id="tbody-all"></tbody>
       </table>
     </div>
-  </div>
 
-  <!-- ── FIXTURES TAB ── -->
+    <!-- ── KNOCKOUT BRACKET ── -->
+    <div class="ko-section">
+      <div class="ko-header">
+        <span>⚡</span>
+        <div>
+          <h2>KNOCKOUT STAGE</h2>
+          <div class="ko-sub">Auto-populated from group standings · May 3</div>
+        </div>
+      </div>
+      <div id="ko-bracket"></div>
+    </div>
+
+  </div><!-- /tab-groups -->
   <div id="tab-fixtures" class="tab-hidden">
     <div class="stitle">📅 Match Schedule</div>
     <div class="fbar">
@@ -645,6 +685,7 @@ input::placeholder{color:#aac8b8;font-weight:500;}
         <option value="">All Groups</option>
         <option value="A">Group A Only</option>
         <option value="B">Group B Only</option>
+        <option value="KO">🏆 Knockouts Only</option>
       </select>
       <select id="fix-status-f" onchange="renderFixtures()">
         <option value="">All Matches</option>
@@ -785,16 +826,16 @@ const ti=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 // ═══════════════════════════════════════
 const DEFAULTS={
   teams:[
-    {id:1, name:'Culers FC',           group:'B',captain:'Aditya',  players:['Shivam Wagh','Aditya Todkar','Aditya Pawar','Archit Jadhav','Rushikesh Rathod','Vivek Salunke','Swapnil Patil','Yahya Shaikh'],scorers:{},yellows:{},reds:{}},
-    {id:2, name:'A3 Heroes',           group:'B',captain:'Harsh',   players:['Kabir Bagade','Vedant Jadhav','Ashish Koli','Aditya Kale','Yash Jadhav','Zayed Shaikh','Arth Gangurde','Prathmesh Sonar'],scorers:{},yellows:{},reds:{}},
-    {id:3, name:'Dynamic Destroyers',  group:'B',captain:'Bhagwan', players:['Dev Soni','Sahil Pagare','Pavan Kadam','Prathmesh Diwate','Prem Barma','Himanshu Shirsat','Ajay Gujrati','Murtaza Ujjainwala'],scorers:{},yellows:{},reds:{}},
-    {id:4, name:'Ronak Dominators',    group:'B',captain:'Sahil',   players:['Hanzala Shah','Uday Deore','Soham Magar','Hyder Ali','Ethan Kolge','Sushil Kamble','Omkar Toge','Pranav Borade'],scorers:{},yellows:{},reds:{}},
-    {id:5, name:'Elite Warriors',      group:'B',captain:'Dhruv',   players:['Kanishk Shelke','Gaurav Jadhav','Bhavarth Dive','Dnyanesh Wagh','Prem Nikam','Himanshu Kumar','Priyesh Wankhede','Bharga Khambalwar'],scorers:{},yellows:{},reds:{}},
-    {id:6, name:'Viking Warriors',     group:'A',captain:'Ashmak',  players:['Harsh Gulve','Prathamesh Bhor','Rushikesh Wagh','Suyog Khandagale','Prarik Chikale','Ashish','Nidhish Shinde','Arya Chavan'],scorers:{},yellows:{},reds:{}},
-    {id:7, name:'Urban Kickers',       group:'A',captain:'Krish',   players:['Shlok Aher','Darshan Pawar','Raj Bedmutha','Ali Abbas','Unmesh Bhamre','Om Borade','Krishna Desai','Rudra Patel'],scorers:{},yellows:{},reds:{}},
-    {id:8, name:'NSA',                 group:'A',captain:'Gurman',  players:['Raj Pande','Dev Thakur','Atharva Bagul','Kushal More','Krushna Bhosle','Bhavesh Gangurde','Soham Avhad','Swayam Jadhav'],scorers:{},yellows:{},reds:{}},
-    {id:9, name:'Top Predators',       group:'A',captain:'Ritesh',  players:['Shubh Jachak','Addy Shelke','Salik Parhan','Atharva Godse','Pranav Bachav','Arya Agarkar','Shreerang Ganore','Ravin Sonar'],scorers:{},yellows:{},reds:{}},
-    {id:10,name:'Ishan FC',            group:'A',captain:'Khemraj', players:['Siddhant Ghangale','Pranav Rajput','Kalpesh Porje','Arjun Tupe','Ishan Nair','Aditya Sonawne','Vinay Thakkar','Urjit Khairnar'],scorers:{},yellows:{},reds:{}},
+    {id:1, name:'Culers FC',           group:'B',captain:'Aditya',  players:['Aditya Todkar','Shivam Wagh','Aditya Pawar','Archit Jadhav','Rushikesh Rathod','Vivek Salunke','Swapnil Patil','Yahya Shaikh'],scorers:{},yellows:{},reds:{}},
+    {id:2, name:'A3 Heroes',           group:'B',captain:'Harsh',   players:['Harsh','Kabir Bagade','Vedant Jadhav','Ashish Koli','Aditya Kale','Yash Jadhav','Zayed Shaikh','Arth Gangurde','Prathmesh Sonar'],scorers:{},yellows:{},reds:{}},
+    {id:3, name:'Dynamic Destroyers',  group:'B',captain:'Bhagwan', players:['Bhagwan','Dev Soni','Sahil Pagare','Pavan Kadam','Prathmesh Diwate','Prem Barma','Himanshu Shirsat','Ajay Gujrati','Murtaza Ujjainwala'],scorers:{},yellows:{},reds:{}},
+    {id:4, name:'Ronak Dominators',    group:'B',captain:'Sahil',   players:['Sahil','Hanzala Shah','Uday Deore','Soham Magar','Hyder Ali','Ethan Kolge','Sushil Kamble','Omkar Toge','Pranav Borade'],scorers:{},yellows:{},reds:{}},
+    {id:5, name:'Elite Warriors',      group:'B',captain:'Dhruv',   players:['Dhruv','Kanishk Shelke','Gaurav Jadhav','Bhavarth Dive','Dnyanesh Wagh','Prem Nikam','Himanshu Kumar','Priyesh Wankhede','Bharga Khambalwar'],scorers:{},yellows:{},reds:{}},
+    {id:6, name:'Viking Warriors',     group:'A',captain:'Ashmak',  players:['Ashmak','Harsh Gulve','Prathamesh Bhor','Rushikesh Wagh','Suyog Khandagale','Prarik Chikale','Ashish','Nidhish Shinde','Arya Chavan'],scorers:{},yellows:{},reds:{}},
+    {id:7, name:'Urban Kickers',       group:'A',captain:'Krish',   players:['Krish','Shlok Aher','Darshan Pawar','Raj Bedmutha','Ali Abbas','Unmesh Bhamre','Om Borade','Krishna Desai','Rudra Patel'],scorers:{},yellows:{},reds:{}},
+    {id:8, name:'NSA',                 group:'A',captain:'Gurman',  players:['Gurman','Raj Pande','Dev Thakur','Atharva Bagul','Kushal More','Krushna Bhosle','Bhavesh Gangurde','Soham Avhad','Swayam Jadhav'],scorers:{},yellows:{},reds:{}},
+    {id:9, name:'Top Predators',       group:'A',captain:'Ritesh',  players:['Ritesh','Shubh Jachak','Addy Shelke','Salik Parhan','Atharva Godse','Pranav Bachav','Arya Agarkar','Shreerang Ganore','Ravin Sonar'],scorers:{},yellows:{},reds:{}},
+    {id:10,name:'Ishan FC',            group:'A',captain:'Khemraj', players:['Khemraj','Siddhant Ghangale','Pranav Rajput','Kalpesh Porje','Arjun Tupe','Ishan Nair','Aditya Sonawne','Vinay Thakkar','Urjit Khairnar'],scorers:{},yellows:{},reds:{}},
   ],
   matches:[
     {id:1, hId:1, aId:2,  hG:0,aG:0,played:false,live:false,date:'May 2',time:'4:00 – 4:20 PM', round:'Match 1', group:'B',hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:''},
@@ -833,9 +874,17 @@ function migrateState(raw){
   if(!raw)raw=JSON.parse(JSON.stringify(DEFAULTS));
   raw.teams.forEach(t=>{
     if(!t.group)t.group='A';
-    if(!t.players||!t.players.length){
-      const def=DEFAULTS.teams.find(d=>d.id===t.id);
-      if(def&&def.players)t.players=def.players;else t.players=[];
+    // SAFE PLAYER MERGE: only add missing players, never remove or reorder existing
+    const def=DEFAULTS.teams.find(d=>d.id===t.id);
+    if(def&&def.players){
+      if(!t.players)t.players=[];
+      def.players.forEach(p=>{
+        if(!t.players.includes(p)){
+          // Insert icon player (first in DEFAULTS) at front if not present
+          if(def.players.indexOf(p)===0) t.players.unshift(p);
+          else t.players.push(p);
+        }
+      });
     }
   });
   raw.matches.forEach(m=>{
@@ -843,6 +892,8 @@ function migrateState(raw){
     if(!m.group)m.group='A';
     ['hSc','aSc','hY','aY','hR','aR','motm','gk'].forEach(k=>{if(m[k]===undefined)m[k]='';});
   });
+  if(!raw.nextTid)raw.nextTid=DEFAULTS.nextTid||11;
+  if(!raw.nextMid)raw.nextMid=DEFAULTS.nextMid||21;
   return raw;
 }
 
@@ -855,20 +906,26 @@ function setRtStatus(state){
 }
 
 async function loadState(){
-  // Always load PIN from localStorage (admin-only, device-specific)
   try{adminPin=localStorage.getItem('cpl26pin')||'0205';}catch(e){adminPin='0205';}
 
   setRtStatus('connecting');
   try{
     const{data,error}=await supa.from(DB_TABLE).select('state').eq('id',DB_ROW_ID).single();
     if(error&&error.code==='PGRST116'){
-      // Row doesn't exist yet — create it with defaults
+      // Row doesn't exist yet — create with defaults
       S=migrateState(null);
       await supa.from(DB_TABLE).insert({id:DB_ROW_ID,state:S});
     } else if(error){
       throw error;
     } else {
+      const before=JSON.stringify(data.state?.teams?.map(t=>t.players));
       S=migrateState(data.state);
+      const after=JSON.stringify(S.teams.map(t=>t.players));
+      // If migration added new players, push silently back to Supabase
+      if(before!==after){
+        console.log('🔄 Player roster migration applied — syncing to Supabase…');
+        await supa.from(DB_TABLE).upsert({id:DB_ROW_ID,state:S,updated_at:new Date().toISOString()});
+      }
     }
     setRtStatus('connected');
   } catch(e){
@@ -913,6 +970,8 @@ function subscribeRealtime(){
 // Wrap save to set _saving flag so we don't re-render from our own push
 const _origSave=save;
 async function saveAndSync(){
+  ensureKoMatches();
+  syncKoTeams();
   _saving=true;
   await save();
   setTimeout(()=>{_saving=false;},1500);
@@ -1033,8 +1092,166 @@ function tName(id){const t=S.teams.find(t=>t.id===id);return t?t.name:'Unknown';
 function tIdx(id){return S.teams.findIndex(t=>t.id===id);}
 
 // ═══════════════════════════════════════
-//  RENDER STANDINGS
+//  KNOCKOUT BRACKET
 // ═══════════════════════════════════════
+// Fixed IDs for knockout matches — never clash with group matches
+const KO_SF1_ID  = 101; // SF1: Group A 1st vs Group B 2nd
+const KO_SF2_ID  = 102; // SF2: Group B 1st vs Group A 2nd
+const KO_FIN_ID  = 103; // Final: SF1 winner vs SF2 winner
+
+function getKoMatch(id){
+  return S.matches.find(m=>m.id===id)||null;
+}
+
+function ensureKoMatches(){
+  // Add knockout match stubs to S.matches if not present — safe, never overwrites existing
+  const stubs=[
+    {id:KO_SF1_ID,hId:0,aId:0,hG:0,aG:0,played:false,live:false,date:'May 3',time:'TBD',round:'Semi Final 1',group:'KO',hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:'',koSf:1},
+    {id:KO_SF2_ID,hId:0,aId:0,hG:0,aG:0,played:false,live:false,date:'May 3',time:'TBD',round:'Semi Final 2',group:'KO',hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:'',koSf:2},
+    {id:KO_FIN_ID,hId:0,aId:0,hG:0,aG:0,played:false,live:false,date:'May 3',time:'TBD',round:'🏆 Grand Finale',group:'KO',hSc:'',aSc:'',hY:'',aY:'',hR:'',aR:'',motm:'',gk:'',koFinal:true},
+  ];
+  stubs.forEach(stub=>{
+    if(!S.matches.find(m=>m.id===stub.id)) S.matches.push(stub);
+  });
+}
+
+function computeKoTeams(){
+  // Returns {a1,a2,b1,b2} — top 2 from each group by standings
+  const stA=computeStandings('A');
+  const stB=computeStandings('B');
+  return {
+    a1: stA[0]||null,  // Group A 1st
+    a2: stA[1]||null,  // Group A 2nd
+    b1: stB[0]||null,  // Group B 1st
+    b2: stB[1]||null,  // Group B 2nd
+  };
+}
+
+function syncKoTeams(){
+  // Automatically update hId/aId of KO matches from live standings
+  ensureKoMatches();
+  const {a1,a2,b1,b2}=computeKoTeams();
+  const sf1=getKoMatch(KO_SF1_ID);
+  const sf2=getKoMatch(KO_SF2_ID);
+  const fin=getKoMatch(KO_FIN_ID);
+
+  // Only update team IDs if match not yet played (protect finalized results)
+  if(sf1&&!sf1.played&&!sf1.live){
+    sf1.hId=a1?a1.id:0;
+    sf1.aId=b2?b2.id:0;
+  }
+  if(sf2&&!sf2.played&&!sf2.live){
+    sf2.hId=b1?b1.id:0;
+    sf2.aId=a2?a2.id:0;
+  }
+  // Final: filled from SF results if played
+  if(fin&&!fin.played&&!fin.live){
+    const sf1Winner=sf1&&sf1.played?(sf1.hG>sf1.aG?sf1.hId:sf1.aG>sf1.hG?sf1.aId:0):0;
+    const sf2Winner=sf2&&sf2.played?(sf2.hG>sf2.aG?sf2.hId:sf2.aG>sf2.hG?sf2.aId:0):0;
+    fin.hId=sf1Winner;
+    fin.aId=sf2Winner;
+  }
+}
+
+function koTeamBlock(teamId, label, seed, isAway){
+  const t=S.teams.find(t=>t.id===teamId);
+  const idx=S.teams.findIndex(t=>t.id===teamId);
+  const color=t?tc(idx):'#aaa';
+  if(!t||teamId===0){
+    return `<div class="ko-team${isAway?' away':''}">
+      <div class="tava" style="background:#f3f4f6;color:#9ca3af;border-color:#e5e7eb;width:36px;height:36px;font-size:11px;">?</div>
+      <div><div class="ko-team-name tbd">${label}</div><div class="ko-seed">${seed}</div></div>
+    </div>`;
+  }
+  return `<div class="ko-team${isAway?' away':''}">
+    <div class="tava" style="background:${color}18;color:${color};border-color:${color}66;width:36px;height:36px;font-size:12px;">${ti(t.name)}</div>
+    <div><div class="ko-team-name">${t.name}</div><div class="ko-seed">${seed}</div></div>
+  </div>`;
+}
+
+function renderKnockoutCard(m, hLabel, aLabel, hSeed, aSeed, isFinal){
+  if(!m)return'';
+  const hPlayed=m.played||m.live;
+  const scoreHtml=m.live
+    ?`<div class="ko-score live-score">🔴 ${m.hG}–${m.aG}</div>`
+    :m.played
+      ?`<div class="ko-score">${m.hG} – ${m.aG}</div>`
+      :`<div class="ko-score pending-score">VS</div>`;
+
+  let statusHtml='';
+  if(m.live)statusHtml=`<span class="live-pill"><span class="live-dot"></span>LIVE</span>`;
+  else if(m.played)statusHtml=`<span class="status-played">✅ Full Time</span>`;
+  else statusHtml=`<span class="status-upcoming">⏳ Upcoming</span>`;
+
+  // Winner banner
+  let winnerBanner='';
+  if(m.played&&(m.hG!==m.aG)){
+    const winnerId=m.hG>m.aG?m.hId:m.aId;
+    const winner=S.teams.find(t=>t.id===winnerId);
+    if(isFinal){
+      winnerBanner=`<div class="ko-winner-banner">🏆 🥇 CPL 2026 Champion: <strong>${winner?winner.name:'TBD'}</strong> 🎉</div>`;
+    } else {
+      winnerBanner=`<div class="ko-winner-banner">✅ Advances to Final: <strong>${winner?winner.name:'TBD'}</strong></div>`;
+    }
+  }
+
+  // Qualifier note
+  let qualNote='';
+  if(!hPlayed){
+    qualNote=`<div class="ko-qualifier">📋 Teams confirmed from group standings once all group matches are played</div>`;
+  }
+
+  const adminActions=isAdmin?`
+    <div class="fadmin" style="padding:10px 16px 14px;">
+      ${!m.played&&!m.live?`<button class="fa-btn live-btn" onclick="openScoreModal(${m.id})">🔴 Go Live</button>`:''}
+      ${m.live?`<button class="fa-btn live-btn" onclick="openScoreModal(${m.id})">🔴 Update Live</button>`:''}
+      <button class="fa-btn result-btn" onclick="openScoreModal(${m.id})">${m.played?'✏️ Edit Result':'📝 Enter Result'}</button>
+      ${m.played&&!m.live?`<button class="fa-btn undo-btn" onclick="confirmUndo(${m.id})">↩ Undo</button>`:''}
+    </div>`:'';
+
+  return `<div class="ko-card${m.played||m.live?'':' ko-pending'}${isFinal?' ko-final':''}">
+    <div class="ko-meta">
+      <span class="ko-badge">${m.round}</span>
+      <span style="font-size:12px;color:var(--muted);font-weight:700;">📅 ${m.date||'May 3'} ${m.time?'· '+m.time:''}</span>
+      ${statusHtml}
+    </div>
+    <div class="ko-fixture">
+      ${koTeamBlock(m.hId,hLabel,hSeed,false)}
+      ${scoreHtml}
+      ${koTeamBlock(m.aId,aLabel,aSeed,true)}
+    </div>
+    ${winnerBanner}
+    ${qualNote}
+    ${adminActions}
+  </div>`;
+}
+
+function renderKnockout(){
+  syncKoTeams();
+  const wrap=document.getElementById('ko-bracket');if(!wrap)return;
+  const {a1,a2,b1,b2}=computeKoTeams();
+  const sf1=getKoMatch(KO_SF1_ID);
+  const sf2=getKoMatch(KO_SF2_ID);
+  const fin=getKoMatch(KO_FIN_ID);
+
+  // Determine final qualifier names
+  const sf1WinName=sf1&&sf1.played&&sf1.hG!==sf1.aG?(sf1.hG>sf1.aG?tName(sf1.hId):tName(sf1.aId)):'SF1 Winner';
+  const sf2WinName=sf2&&sf2.played&&sf2.hG!==sf2.aG?(sf2.hG>sf2.aG?tName(sf2.hId):tName(sf2.aId)):'SF2 Winner';
+
+  wrap.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      ${renderKnockoutCard(sf1,
+        a1?a1.name:'Group A 1st', b2?b2.name:'Group B 2nd',
+        'Group A · 1st Place','Group B · 2nd Place', false)}
+      ${renderKnockoutCard(sf2,
+        b1?b1.name:'Group B 1st', a2?a2.name:'Group A 2nd',
+        'Group B · 1st Place','Group A · 2nd Place', false)}
+    </div>
+    ${renderKnockoutCard(fin, sf1WinName, sf2WinName,
+      'Semi Final 1 Winner','Semi Final 2 Winner', true)}
+    <style>@media(max-width:600px){#ko-bracket>div:first-child{grid-template-columns:1fr;}}</style>
+  `;
+}
 function renderGroupTable(group, tbodyId){
   const st=computeStandings(group);
   const tbody=document.getElementById(tbodyId);
@@ -1110,8 +1327,16 @@ function renderFixtures(){
   const list=document.getElementById('fixtures-list');if(!list)return;
   const gf=document.getElementById('fix-group-f')?.value||'';
   const sf=document.getElementById('fix-status-f')?.value||'';
+
+  // Ensure KO stubs exist before rendering
+  ensureKoMatches();
+  syncKoTeams();
+
   let ms=[...S.matches];
-  if(gf)ms=ms.filter(m=>m.group===gf);
+  if(gf==='KO')ms=ms.filter(m=>m.group==='KO');
+  else if(gf)ms=ms.filter(m=>m.group===gf&&m.group!=='KO');
+  else ms=ms.filter(m=>m.group!=='KO'); // default: hide KO from main list (shown in bracket)
+
   if(sf==='live')ms=ms.filter(m=>m.live);
   else if(sf==='played')ms=ms.filter(m=>m.played&&!m.live);
   else if(sf==='upcoming')ms=ms.filter(m=>!m.played&&!m.live);
@@ -1135,7 +1360,7 @@ function renderFixtures(){
         </div>`;
       }
       const ht=S.teams.find(t=>t.id===m.hId),at=S.teams.find(t=>t.id===m.aId);
-      const hc=tc(tIdx(m.hId)),ac=tc(tIdx(m.aId));
+      const hc=ht?tc(tIdx(m.hId)):'#aaa',ac=at?tc(tIdx(m.aId)):'#aaa';
       const hW=m.played&&m.hG>m.aG,aW=m.played&&m.aG>m.hG;
       const chips=[];
       if(m.hSc)chips.push(`<span class="schip">⚽ ${m.hSc}</span>`);
@@ -1158,7 +1383,12 @@ function renderFixtures(){
       else if(m.played)statusHtml=`<span class="status-played">✅ Full Time</span>`;
       else statusHtml=`<span class="status-upcoming">⏳ Upcoming</span>`;
 
-      const gpClass=m.group==='A'?'gpill-a':'gpill-b';
+      const isKo=m.group==='KO';
+      const gpClass=isKo?'gpill-ko':m.group==='A'?'gpill-a':'gpill-b';
+      const gpLabel=isKo?'KO':m.group||'A';
+
+      const hName=ht?ht.name:(m.hId?'TBD':'TBD');
+      const aName=at?at.name:(m.aId?'TBD':'TBD');
 
       const adminActions=isAdmin?`
         <div class="fadmin">
@@ -1166,24 +1396,24 @@ function renderFixtures(){
           ${m.live?`<button class="fa-btn live-btn" onclick="openScoreModal(${m.id})">🔴 Update Live</button>`:''}
           <button class="fa-btn result-btn" onclick="openScoreModal(${m.id})">${m.played?'✏️ Edit Result':'📝 Enter Result'}</button>
           ${m.played&&!m.live?`<button class="fa-btn undo-btn" onclick="confirmUndo(${m.id})">↩ Undo</button>`:''}
-          <button class="fa-btn del-btn" onclick="deleteMatch(${m.id})">🗑 Remove</button>
+          ${!isKo?`<button class="fa-btn del-btn" onclick="deleteMatch(${m.id})">🗑 Remove</button>`:''}
         </div>`:'';
 
-      html+=`<div class="fcard ${m.live?'live':m.played?'played':''}">
+      html+=`<div class="fcard ${m.live?'live':m.played?'played':''}${isKo?' ko-fx':''}">
         <div class="fmeta">
           <span class="rpill">${m.round||''}</span>
-          <span class="gpill ${gpClass}">GRP ${m.group||'A'}</span>
+          <span class="gpill ${gpClass}">${isKo?'🏆 KO':'GRP '+gpLabel}</span>
           ${m.time?`<span>🕐 ${m.time}</span>`:''}
           ${statusHtml}
         </div>
         <div class="fmain">
           <div class="tblk${hW?' whl':''}">
             <div class="tava" style="background:${hc}18;color:${hc};border-color:${hc}66;">${ht?ti(ht.name):'?'}</div>
-            <span class="fxname">${tName(m.hId)}</span>
+            <span class="fxname">${hName}</span>
           </div>
           ${scoreHtml}
           <div class="tblk away${aW?' whl':''}">
-            <span class="fxname away">${tName(m.aId)}</span>
+            <span class="fxname away">${aName}</span>
             <div class="tava" style="background:${ac}18;color:${ac};border-color:${ac}66;">${at?ti(at.name):'?'}</div>
           </div>
         </div>
@@ -1757,6 +1987,7 @@ function renderAll(){
   renderStats();
   renderTopScorer();
   renderStandings();
+  renderKnockout();
   renderFixtures();
   renderScorers();
   renderDiscipline();
